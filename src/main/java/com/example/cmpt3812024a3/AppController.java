@@ -90,9 +90,16 @@ public class AppController {
      */
     ControllerState create_or_unselect = new ControllerState() {
 
-        public void handleDragged(MouseEvent event) { }
+        public void handleDragged(MouseEvent event) {
+            model.addBox(event.getX(), event.getY(), 0 ,0);
+            imodel.setSelectedBox(model.whichBox(event.getX(), event.getY()));
+            currentState = creating;
+        }
 
-        public void handleReleased(MouseEvent event) { }
+        public void handleReleased(MouseEvent event) {
+            imodel.setSelectedBox(null);
+            currentState = ready;
+        }
 
     };
 
@@ -101,9 +108,17 @@ public class AppController {
      */
     ControllerState creating = new ControllerState() {
 
-        public void handleDragged(MouseEvent event) { };
+        public void handleDragged(MouseEvent event) {
+            dw = event.getX() - prevX;
+            dh = event.getY() - prevY;
+            prevX = event.getX();
+            prevY = event.getY();
+            imodel.getSelectedBox().update(dw, dh);
+        }
 
-        public void handleReleased(MouseEvent event) { }
+        public void handleReleased(MouseEvent event) {
+            currentState = ready;
+        }
 
     };
 
