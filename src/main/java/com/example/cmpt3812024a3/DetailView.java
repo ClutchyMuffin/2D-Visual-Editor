@@ -1,6 +1,6 @@
 package com.example.cmpt3812024a3;
 
-import javafx.beans.Observable;
+import javafx.application.Platform;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.StackPane;
@@ -27,6 +27,11 @@ public class DetailView extends StackPane implements Subscriber {
             myCanvas.setWidth(newValue.doubleValue());
             draw();
         });
+        this.heightProperty().addListener((observable, oldValue, newValue) -> {
+            myCanvas.setHeight(newValue.doubleValue());
+            draw();
+        });
+        Platform.runLater(() -> myCanvas.requestFocus());
         this.getChildren().add(myCanvas);
 
     }
@@ -51,6 +56,7 @@ public class DetailView extends StackPane implements Subscriber {
         setOnMousePressed(controller::handlePressed);
         setOnMouseDragged(controller::handleDragged);
         setOnMouseReleased(controller::handleReleased);
+        myCanvas.setOnKeyPressed(controller::handleKeyPressed);
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.example.cmpt3812024a3;
 
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 
 public class AppController {
@@ -54,6 +55,24 @@ public class AppController {
      */
     public void handleReleased(MouseEvent event) {
         currentState.handleReleased(event);
+    }
+
+    /**
+     * Handle the Key Pressed event
+     * @param event key event
+     */
+    public void handleKeyPressed(KeyEvent event) {
+        switch (event.getCode()) {
+            case DELETE:
+            case BACK_SPACE:
+                if (imodel.getSelectedBox() != null) {
+                    model.removeBox(imodel.getSelectedBox());
+                    imodel.setSelectedBox(null);
+                }
+                break;
+            default:
+                break;
+        }
     }
 
     /**
