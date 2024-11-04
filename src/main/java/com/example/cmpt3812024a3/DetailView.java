@@ -52,10 +52,18 @@ public class DetailView extends StackPane implements Subscriber {
      */
     public void draw() {
         gc.clearRect(0, 0, width, height);
-        model.getBoxes().forEach(box -> {
-            gc.setFill(Color.INDIGO);
-            gc.fillRect(box.getX(), box.getY(), box.getW(), box.getH());
+        model.getBoxes().forEach(entity -> {
+            if (imodel.getSelectedBox() == entity) {
+                gc.setFill(Color.ORANGE);
+            }
+            else {
+                gc.setFill(Color.BLUE);
+            }
+            gc.setLineWidth(2);
+            gc.fillRect(entity.getX(), entity.getY(), entity.getW(), entity.getH());
+            gc.strokeRect(entity.getX(), entity.getY(), entity.getW(), entity.getH());
         });
+
     }
 
     @Override
