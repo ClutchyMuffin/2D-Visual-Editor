@@ -42,6 +42,11 @@ public class Box {
         this.y += dy;
     }
 
+    public void update(double dw, double dh) {
+        this.w += dw;
+        this.h += dh;
+    }
+
     // Getters
     public double getX() { return x; }
     public double getY() { return y; }
