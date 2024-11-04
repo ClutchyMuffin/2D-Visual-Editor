@@ -4,14 +4,21 @@ public class Box {
 
     private double x;
     private double y;
-    private double width;
-    private double height;
+    private double w;
+    private double h;
 
-    public Box(double x, double y, double width, double height) {
+    /**
+     * Constructor of the Box Class
+     * @param x top-left
+     * @param y top-right
+     * @param w width
+     * @param h height
+     */
+    public Box(double x, double y, double w, double h) {
         this.x = x;
         this.y = y;
-        this.width = width;
-        this.height = height;
+        this.w = w;
+        this.h = h;
     }
 
     /**
@@ -21,8 +28,8 @@ public class Box {
      * @return true or false
      */
     public boolean contains(double mx, double my) {
-        return (mx >= this.x) && (mx <= this.x + this.width) &&
-                (my >= this.y) && (my <= this.y + this.height) ;
+        return (mx >= this.x) && (mx <= this.x + this.w) &&
+                (my >= this.y) && (my <= this.y + this.h) ;
     }
 
     /**
@@ -38,13 +45,13 @@ public class Box {
     // Getters
     public double getX() { return x; }
     public double getY() { return y; }
-    public double getWidth() { return width; }
-    public double getHeight() { return height; }
+    public double getW() { return w; }
+    public double getH() { return h; }
 
     // Setters
     public void setX(double nx) { this.x = nx; }
     public void setY(double ny) { this.y = ny; }
-    public void setWidth(double nwidth) { this.width = nwidth; }
-    public void setHeight(double nheight) { this.height = nheight; }
+    public void setW(double nw) { this.w = nw; }
+    public void setH(double nh) { this.h = nh; }
 
 }
