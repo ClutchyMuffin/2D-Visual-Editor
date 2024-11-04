@@ -20,31 +20,41 @@ public class AppController {
      * Set the model
      * @param m model
      */
-    public void setModel(EntityModel m) { this.model = m; }
+    public void setModel(EntityModel m) {
+        this.model = m;
+    }
 
     /**
      * Set the imodel
      * @param im imodel
      */
-    public void setIModel(InteractionModel im) { this.imodel = im; }
+    public void setIModel(InteractionModel im) {
+        this.imodel = im;
+    }
 
     /**
      * Handle the Mouse Pressed event
      * @param event mouse event
      */
-    public void handlePressed(MouseEvent event) { currentState.handlePressed(event); }
+    public void handlePressed(MouseEvent event) {
+        currentState.handlePressed(event);
+    }
 
     /**
      * Handle the Mouse Dragged event
      * @param event mouse event
      */
-    public void handleDragged(MouseEvent event) { currentState.handleDragged(event); }
+    public void handleDragged(MouseEvent event) {
+        currentState.handleDragged(event);
+    }
 
     /**
      * Handle the Mouse Released event
      * @param event mouse event
      */
-    public void handleReleased(MouseEvent event) { currentState.handleReleased(event); }
+    public void handleReleased(MouseEvent event) {
+        currentState.handleReleased(event);
+    }
 
     /**
      * Public class that defines the controller state & methods
@@ -66,6 +76,7 @@ public class AppController {
 
             if (model.contains(event.getX(), event.getY())) {
                 imodel.setSelectedBox(model.whichBox(event.getX(), event.getY()));
+                model.notifySubscribers();
                 currentState = dragging;
             }
             else {
@@ -122,6 +133,7 @@ public class AppController {
             prevX = event.getX();
             prevY = event.getY();
             imodel.getSelectedBox().update(dw, dh);
+            model.notifySubscribers();
         }
 
         public void handleReleased(MouseEvent event) {
