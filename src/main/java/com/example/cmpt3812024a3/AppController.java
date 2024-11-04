@@ -117,6 +117,7 @@ public class AppController {
 
         public void handleReleased(MouseEvent event) {
             imodel.setSelectedBox(null);
+            model.notifySubscribers();
             currentState = ready;
         }
 
