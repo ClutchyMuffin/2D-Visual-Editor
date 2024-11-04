@@ -60,7 +60,18 @@ public class AppController {
      */
     ControllerState ready = new ControllerState() {
 
-        public void handlePressed(MouseEvent event) { }
+        public void handlePressed(MouseEvent event) {
+            prevX = event.getX();
+            prevY = event.getY();
+
+            if (model.contains(event.getX(), event.getY())) {
+                imodel.setSelectedBox(model.whichBox(event.getX(), event.getY()));
+                currentState = dragging;
+            }
+            else {
+                currentState = create_or_unselect;
+            }
+        }
     };
 
     /**
