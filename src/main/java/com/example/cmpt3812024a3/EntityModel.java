@@ -87,7 +87,7 @@ public class EntityModel {
     /**
      * Notify the subscribers about the change in the model
      */
-    private void notifySubscribers() {
+    public void notifySubscribers() {
         subs.forEach(Subscriber::modelChanged);
     }
 
