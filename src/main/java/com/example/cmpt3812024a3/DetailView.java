@@ -1,5 +1,6 @@
 package com.example.cmpt3812024a3;
 
+import javafx.beans.Observable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.StackPane;
@@ -7,6 +8,7 @@ import javafx.scene.paint.Color;
 
 public class DetailView extends StackPane implements Subscriber {
 
+    Canvas myCanvas;
     double width, height;
     GraphicsContext gc;
     EntityModel model;
@@ -19,8 +21,12 @@ public class DetailView extends StackPane implements Subscriber {
 
         this.width = 800;
         this.height = 800;
-        Canvas myCanvas = new Canvas(width, height);
+        myCanvas = new Canvas(width, height);
         gc = myCanvas.getGraphicsContext2D();
+        this.widthProperty().addListener((observable, oldValue, newValue) -> {
+            myCanvas.setWidth(newValue.doubleValue());
+            draw();
+        });
         this.getChildren().add(myCanvas);
 
     }
@@ -51,7 +57,7 @@ public class DetailView extends StackPane implements Subscriber {
      * Draw the boxes in the model on the canvas
      */
     public void draw() {
-        gc.clearRect(0, 0, width, height);
+        gc.clearRect(0, 0, myCanvas.getWidth(), myCanvas.getHeight());
         model.getBoxes().forEach(entity -> {
             if (imodel.getSelectedBox() == entity) {
                 gc.setFill(Color.ORANGE);
