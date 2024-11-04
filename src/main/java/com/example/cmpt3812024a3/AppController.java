@@ -79,9 +79,17 @@ public class AppController {
      */
     ControllerState dragging = new ControllerState() {
 
-        public void handleDragged(MouseEvent event) { }
+        public void handleDragged(MouseEvent event) {
+            dx = event.getX() - prevX;
+            dy = event.getY() - prevY;
+            prevX = event.getX();
+            prevY = event.getY();
+            model.moveBox(imodel.getSelectedBox(), dx, dy);
+        }
 
-        public void handleReleased(MouseEvent event) { }
+        public void handleReleased(MouseEvent event) {
+            currentState = ready;
+        }
 
     };
 
