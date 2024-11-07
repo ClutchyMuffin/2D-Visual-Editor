@@ -81,6 +81,7 @@ public class InteractionModel {
     public void moveViewPort(double dx, double dy) {
         viewLeft += dx;
         viewTop += dy;
+        notifySubscribers();
     }
 
     /**
