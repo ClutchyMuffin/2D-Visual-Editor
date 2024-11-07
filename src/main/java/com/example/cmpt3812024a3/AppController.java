@@ -8,7 +8,7 @@ public class AppController {
     private EntityModel model;
     private InteractionModel imodel;
     private ControllerState currentState;
-    private double prevX, prevY, dx, dy, dw, dh;
+    private double prevX, prevY, dx, dy, adjustedX, adjustedY;
 
     /**
      * Constructor for the Controller class
@@ -62,17 +62,15 @@ public class AppController {
      * @param event key event
      */
     public void handleKeyPressed(KeyEvent event) {
-        switch (event.getCode()) {
-            case DELETE:
-            case BACK_SPACE:
-                if (imodel.getSelectedBox() != null) {
-                    model.removeBox(imodel.getSelectedBox());
-                    imodel.setSelectedBox(null);
-                }
-                break;
-            default:
-                break;
-        }
+        currentState.handleKeyPressed(event);
+    }
+
+    /**
+     * Handle the Key Released event
+     * @param event key event
+     */
+    public void handleKeyReleased(KeyEvent event) {
+        currentState.handleKeyReleased(event);
     }
 
     /**
@@ -82,6 +80,8 @@ public class AppController {
         void handlePressed(MouseEvent event) { }
         void handleDragged(MouseEvent event) { }
         void handleReleased(MouseEvent event) { }
+        void handleKeyPressed(KeyEvent event) { }
+        void handleKeyReleased(KeyEvent event) { }
     }
 
     /**
@@ -93,13 +93,32 @@ public class AppController {
             prevX = event.getX();
             prevY = event.getY();
 
-            if (model.contains(event.getX(), event.getY())) {
-                imodel.setSelectedBox(model.whichBox(event.getX(), event.getY()));
+            adjustedX = event.getX() - imodel.getViewLeft();
+            adjustedY = event.getY() - imodel.getViewTop();
+
+            if (model.contains(adjustedX, adjustedY)) {
+                imodel.setSelectedBox(model.whichBox(adjustedX, adjustedY));
                 model.notifySubscribers();
                 currentState = dragging;
             }
             else {
                 currentState = create_or_unselect;
+            }
+        }
+
+        public void handleKeyPressed(KeyEvent event) {
+            switch (event.getCode()) {
+                case DELETE:
+                case BACK_SPACE:
+                    if (imodel.getSelectedBox() != null) {
+                        model.removeBox(imodel.getSelectedBox());
+                        imodel.setSelectedBox(null);
+                    }
+                    break;
+                case SHIFT:
+                    currentState = panning;
+                default:
+                    break;
             }
         }
     };
@@ -129,8 +148,8 @@ public class AppController {
     ControllerState create_or_unselect = new ControllerState() {
 
         public void handleDragged(MouseEvent event) {
-            model.addBox(event.getX(), event.getY(), 0 ,0);
-            imodel.setSelectedBox(model.whichBox(event.getX(), event.getY()));
+            model.addBox(adjustedX, adjustedY, 0 ,0);
+            imodel.setSelectedBox(model.whichBox(adjustedX, adjustedY));
             currentState = creating;
         }
 
@@ -148,11 +167,11 @@ public class AppController {
     ControllerState creating = new ControllerState() {
 
         public void handleDragged(MouseEvent event) {
-            dw = event.getX() - prevX;
-            dh = event.getY() - prevY;
+            dx = event.getX() - prevX;
+            dy = event.getY() - prevY;
             prevX = event.getX();
             prevY = event.getY();
-            imodel.getSelectedBox().update(dw, dh);
+            imodel.getSelectedBox().update(dx, dy);
             model.notifySubscribers();
         }
 
@@ -162,6 +181,26 @@ public class AppController {
 
     };
 
+    /**
+     * PANNING state
+     */
+    ControllerState panning = new ControllerState() {
 
+        public void handlePressed(MouseEvent event) {
+            prevX = event.getX();
+            prevY = event.getY();
+        }
 
+        public void handleDragged(MouseEvent event) {
+            dx = event.getX() - prevX;
+            dy = event.getY() - prevY;
+            prevX = event.getX();
+            prevY = event.getY();
+            imodel.moveViewPort(dx, dy);
+        }
+
+        public void handleKeyReleased(KeyEvent event) {
+            currentState = ready;
+        }
+    };
 }
