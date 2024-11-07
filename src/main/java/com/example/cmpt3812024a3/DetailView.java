@@ -57,6 +57,7 @@ public class DetailView extends StackPane implements Subscriber {
         setOnMouseDragged(controller::handleDragged);
         setOnMouseReleased(controller::handleReleased);
         myCanvas.setOnKeyPressed(controller::handleKeyPressed);
+        myCanvas.setOnKeyReleased(controller::handleKeyReleased);
     }
 
     /**
@@ -64,6 +65,8 @@ public class DetailView extends StackPane implements Subscriber {
      */
     public void draw() {
         gc.clearRect(0, 0, myCanvas.getWidth(), myCanvas.getHeight());
+        gc.save();
+        gc.translate(imodel.getViewLeft(), imodel.getViewTop());
         model.getBoxes().forEach(entity -> {
             if (imodel.getSelectedBox() == entity) {
                 gc.setFill(Color.ORANGE);
@@ -75,7 +78,7 @@ public class DetailView extends StackPane implements Subscriber {
             gc.fillRect(entity.getX(), entity.getY(), entity.getW(), entity.getH());
             gc.strokeRect(entity.getX(), entity.getY(), entity.getW(), entity.getH());
         });
-
+        gc.restore();
     }
 
     @Override
