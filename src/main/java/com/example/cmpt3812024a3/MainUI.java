@@ -12,6 +12,7 @@ public class MainUI extends StackPane {
         AppController controller = new AppController();
 
         model.addSubscriber(view);
+        imodel.addSubscriber(view);
         view.setModel(model);
         view.setIModel(imodel);
         view.setupEvents(controller);
