@@ -17,6 +17,9 @@ public class AppController {
         currentState = ready;
     }
 
+
+    // ----------------- SETTERS ----------------- //
+
     /**
      * Set the model
      * @param m model
@@ -32,6 +35,9 @@ public class AppController {
     public void setIModel(InteractionModel im) {
         this.imodel = im;
     }
+
+
+    // ----------------- HANDLERS ----------------- //
 
     /**
      * Handle the Mouse Pressed event
@@ -73,6 +79,9 @@ public class AppController {
         currentState.handleKeyReleased(event);
     }
 
+
+    // ----------------- STATES ----------------- //
+
     /**
      * Public class that defines the controller state & methods
      */
@@ -84,9 +93,9 @@ public class AppController {
         void handleKeyReleased(KeyEvent event) { }
     }
 
-    /**
-     * READY state
-     */
+
+    // ----------------- READY STATE ----------------- //
+
     ControllerState ready = new ControllerState() {
 
         public void handlePressed(MouseEvent event) {
@@ -123,9 +132,9 @@ public class AppController {
         }
     };
 
-    /**
-     * DRAGGING state
-     */
+
+    // ----------------- DRAGGING STATE ----------------- //
+
     ControllerState dragging = new ControllerState() {
 
         public void handleDragged(MouseEvent event) {
@@ -142,9 +151,9 @@ public class AppController {
 
     };
 
-    /**
-     * CREATE OR UNSELECT state
-     */
+
+    // ----------------- CREATE/UNSELECT STATE ----------------- //
+
     ControllerState create_or_unselect = new ControllerState() {
 
         public void handleDragged(MouseEvent event) {
@@ -161,9 +170,9 @@ public class AppController {
 
     };
 
-    /**
-     * CREATING state
-     */
+
+    // ----------------- CREATING STATE ----------------- //
+
     ControllerState creating = new ControllerState() {
 
         public void handleDragged(MouseEvent event) {
@@ -181,9 +190,9 @@ public class AppController {
 
     };
 
-    /**
-     * PANNING state
-     */
+
+    // ----------------- PANNING STATE ----------------- //
+
     ControllerState panning = new ControllerState() {
 
         public void handlePressed(MouseEvent event) {
