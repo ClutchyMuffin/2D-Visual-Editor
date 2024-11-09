@@ -8,7 +8,7 @@ public class AppController {
     private EntityModel model;
     private InteractionModel imodel;
     private ControllerState currentState;
-    private double prevX, prevY, dx, dy, adjustedX, adjustedY;
+    private double prevX, prevY, dx, dy, correctedX, correctedY;
 
     /**
      * Constructor for the Controller class
@@ -102,11 +102,11 @@ public class AppController {
             prevX = event.getX();
             prevY = event.getY();
 
-            adjustedX = event.getX() - imodel.getViewLeft();
-            adjustedY = event.getY() - imodel.getViewTop();
+            correctedX = event.getX() - imodel.getViewLeft();
+            correctedY = event.getY() - imodel.getViewTop();
 
-            if (model.contains(adjustedX, adjustedY)) {
-                imodel.setSelectedBox(model.whichBox(adjustedX, adjustedY));
+            if (model.contains(correctedX, correctedY)) {
+                imodel.setSelectedBox(model.whichBox(correctedX, correctedY));
                 model.notifySubscribers();
                 currentState = dragging;
             }
@@ -157,8 +157,8 @@ public class AppController {
     ControllerState create_or_unselect = new ControllerState() {
 
         public void handleDragged(MouseEvent event) {
-            model.addBox(adjustedX, adjustedY, 0 ,0);
-            imodel.setSelectedBox(model.whichBox(adjustedX, adjustedY));
+            model.addBox(correctedX, correctedY, 0 ,0);
+            imodel.setSelectedBox(model.whichBox(correctedX, correctedY));
             currentState = creating;
         }
 

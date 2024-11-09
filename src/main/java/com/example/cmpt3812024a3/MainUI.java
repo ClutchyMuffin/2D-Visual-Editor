@@ -1,25 +1,40 @@
 package com.example.cmpt3812024a3;
 
+import javafx.application.Platform;
 import javafx.scene.layout.StackPane;
 
 public class MainUI extends StackPane {
 
     public MainUI() {
 
+        AppController controller = new AppController();
         EntityModel model = new EntityModel();
         InteractionModel imodel = new InteractionModel();
-        DetailView view = new DetailView();
-        AppController controller = new AppController();
+        DetailView detailView = new DetailView();
+        MiniView miniView = new MiniView();
 
-        model.addSubscriber(view);
-        imodel.addSubscriber(view);
-        view.setModel(model);
-        view.setIModel(imodel);
-        view.setupEvents(controller);
+        // Controller
         controller.setModel(model);
         controller.setIModel(imodel);
 
-        this.getChildren().add(view);
+        // Model
+        model.addSubscriber(detailView);
+        model.addSubscriber(miniView);
+        imodel.addSubscriber(detailView);
+        imodel.addSubscriber(miniView);
+
+        // MiniView
+        miniView.setModel(model);
+        miniView.setIModel(imodel);
+        miniView.setupEvents(controller);
+
+        // DetailView
+        detailView.setModel(model);
+        detailView.setIModel(imodel);
+        detailView.setupEvents(controller);
+
+        Platform.runLater(detailView::requestFocus);
+        this.getChildren().addAll(detailView, miniView);
 
     }
 
