@@ -36,7 +36,7 @@ public class MiniView extends DetailView {
 
         // Draw the detailView rectangle
         gc.setFill(Color.YELLOW);
-        gc.fillRect(-imodel.getViewLeft(), -imodel.getViewTop(), 800, 800);
+        gc.fillRect(-imodel.getViewLeft(), -imodel.getViewTop(), getViewWidth(), getViewHeight());
 
         // Draw the boxes
         model.getBoxes().forEach(entity -> {

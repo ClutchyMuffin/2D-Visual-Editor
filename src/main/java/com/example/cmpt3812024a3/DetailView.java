@@ -27,17 +27,33 @@ public class DetailView extends StackPane implements Subscriber {
         // Fix the resizing
         this.widthProperty().addListener((observable, oldValue, newValue) -> {
             myCanvas.setWidth(newValue.doubleValue());
+            this.width = newValue.doubleValue();
             draw();
         });
 
         this.heightProperty().addListener((observable, oldValue, newValue) -> {
             myCanvas.setHeight(newValue.doubleValue());
+            this.height = newValue.doubleValue();
             draw();
         });
 
         this.getChildren().add(myCanvas);
 
     }
+
+    // ----------------- GETTERS ----------------- //
+
+    /**
+     * Get the width of the view
+     * @return width
+     */
+    public double getViewWidth() { return this.width; }
+
+    /**
+     * Get the height of the view
+     * @return height
+     */
+    public double getViewHeight() { return this.height; }
 
 
     // ----------------- SETTERS ----------------- //
