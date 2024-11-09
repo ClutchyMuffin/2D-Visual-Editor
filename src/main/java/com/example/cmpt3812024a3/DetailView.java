@@ -11,8 +11,8 @@ public class DetailView extends StackPane implements Subscriber {
     private Canvas myCanvas;
     private double width, height;
     private GraphicsContext gc;
-    private EntityModel model;
-    private InteractionModel imodel;
+    protected EntityModel model;
+    protected InteractionModel imodel;
 
     /**
      * Constructor of the View Class
@@ -23,15 +23,18 @@ public class DetailView extends StackPane implements Subscriber {
         this.height = 800;
         myCanvas = new Canvas(width, height);
         gc = myCanvas.getGraphicsContext2D();
+
+        // Fix the resizing
         this.widthProperty().addListener((observable, oldValue, newValue) -> {
             myCanvas.setWidth(newValue.doubleValue());
             draw();
         });
+
         this.heightProperty().addListener((observable, oldValue, newValue) -> {
             myCanvas.setHeight(newValue.doubleValue());
             draw();
         });
-        Platform.runLater(() -> myCanvas.requestFocus());
+
         this.getChildren().add(myCanvas);
 
     }
