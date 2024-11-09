@@ -8,11 +8,11 @@ import javafx.scene.paint.Color;
 
 public class DetailView extends StackPane implements Subscriber {
 
-    Canvas myCanvas;
-    double width, height;
-    GraphicsContext gc;
-    EntityModel model;
-    InteractionModel imodel;
+    private Canvas myCanvas;
+    private double width, height;
+    private GraphicsContext gc;
+    private EntityModel model;
+    private InteractionModel imodel;
 
     /**
      * Constructor of the View Class
@@ -35,6 +35,9 @@ public class DetailView extends StackPane implements Subscriber {
         this.getChildren().add(myCanvas);
 
     }
+
+
+    // ----------------- SETTERS ----------------- //
 
     /**
      * Set the given value as the model of the view
@@ -59,6 +62,9 @@ public class DetailView extends StackPane implements Subscriber {
         setOnKeyPressed(controller::handleKeyPressed);
         setOnKeyReleased(controller::handleKeyReleased);
     }
+
+
+    // ----------------- DRAW ----------------- //
 
     /**
      * Draw the boxes in the model on the canvas
