@@ -53,6 +53,8 @@ public class EntityModel {
         notifySubscribers();
     }
 
+    // ----------------- ENTITY CHECKS ----------------- //
+
     /**
      * Check if any box matches the given coordinates
      * @param x x-coordinate
@@ -76,6 +78,8 @@ public class EntityModel {
                 .orElse(null);
     }
 
+    // ----------------- SUBSCRIBERS ----------------- //
+
     /**
      * Add a new subscriber to the model
      * @param sub new sub
@@ -90,6 +94,5 @@ public class EntityModel {
     public void notifySubscribers() {
         subs.forEach(Subscriber::modelChanged);
     }
-
 
 }

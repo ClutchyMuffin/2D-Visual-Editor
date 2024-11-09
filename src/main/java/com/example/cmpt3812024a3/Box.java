@@ -47,13 +47,13 @@ public class Box {
         this.h += dh;
     }
 
-    // Getters
+    // ----------------- GETTERS ----------------- //
     public double getX() { return x; }
     public double getY() { return y; }
     public double getW() { return w; }
     public double getH() { return h; }
 
-    // Setters
+    // ----------------- SETTERS ----------------- //
     public void setX(double nx) { this.x = nx; }
     public void setY(double ny) { this.y = ny; }
     public void setW(double nw) { this.w = nw; }
