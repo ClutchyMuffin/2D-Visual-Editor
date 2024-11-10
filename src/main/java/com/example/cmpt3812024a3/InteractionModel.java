@@ -7,7 +7,7 @@ public class InteractionModel {
     private final ArrayList<Subscriber> subs;
     private Box selectedBox;
     private double worldSize = 2000;
-    private double viewPortLeft, viewPortTop;
+    private double viewPortLeft, viewPortTop, viewPortWidth, viewPortHeight;
 
     /**
      * Constructor for the InteractionModel Class
@@ -26,11 +26,27 @@ public class InteractionModel {
      */
     public void moveViewPort(double dx, double dy) {
 
+        double newViewPortLeft = viewPortLeft + dx;
+        if (newViewPortLeft > 0) {
+            viewPortLeft = 0;
+        }
+        else if (newViewPortLeft < -worldSize + viewPortWidth) {
+            viewPortLeft = -worldSize + viewPortWidth;
+        }
+        else {
+            viewPortLeft = newViewPortLeft;
+        }
 
-
-
-        viewPortLeft += dx;
-        viewPortTop += dy;
+        double newViewPortTop = viewPortTop + dy;
+        if (newViewPortTop > 0) {
+            viewPortTop = 0;
+        }
+        else if (newViewPortTop < -worldSize + viewPortHeight) {
+            viewPortTop = -worldSize + viewPortHeight;
+        }
+        else {
+            viewPortTop = newViewPortTop;
+        }
         notifySubscribers();
     }
 
@@ -49,16 +65,28 @@ public class InteractionModel {
     public double getWorldSize() { return worldSize; }
 
     /**
-     * Returns the left offset
+     * Returns the left offset of the viewport
      * @return left
      */
     public double getViewPortLeft() { return viewPortLeft; }
 
     /**
-     * Returns the top offset
+     * Returns the top offset of the viewport
      * @return top
      */
     public double getViewPortTop() { return viewPortTop; }
+
+    /**
+     * Returns the width of the viewport
+     * @return top
+     */
+    public double getViewPortWidth() { return viewPortWidth; }
+
+    /**
+     * Returns the height of the viewport
+     * @return top
+     */
+    public double getViewPortHeight() { return viewPortHeight; }
 
 
     // ----------------- SETTERS ----------------- //
@@ -70,16 +98,28 @@ public class InteractionModel {
     public void setSelectedBox(Box selectedBox) { this.selectedBox = selectedBox; }
 
     /**
-     * Sets the left offset to the given value
-     * @param viewLeft value to set
+     * Sets the left offset of the viewport to the given value
+     * @param newViewLeft value to set
      */
-    public void setViewLeft(double viewLeft) { this.viewPortLeft = viewLeft; }
+    public void setViewPortLeft(double newViewLeft) { this.viewPortLeft = newViewLeft; }
 
     /**
-     * Sets the top offset to the given value
-     * @param viewTop value to set
+     * Sets the top offset of the viewport to the given value
+     * @param newViewTop value to set
      */
-    public void setViewTop(double viewTop) { this.viewPortTop = viewTop; }
+    public void setViewPortTop(double newViewTop) { this.viewPortTop = newViewTop; }
+
+    /**
+     * Sets the width of the viewport to the given value
+     * @param newViewWidth value to set
+     */
+    public void setViewPortWidth(double newViewWidth) { this.viewPortWidth = newViewWidth; }
+
+    /**
+     * Sets the height of the viewport to the given value
+     * @param newViewHeight value to set
+     */
+    public void setViewPortHeight(double newViewHeight) { this.viewPortHeight = newViewHeight; }
 
 
     // ----------------- SUBSCRIBERS ----------------- //
