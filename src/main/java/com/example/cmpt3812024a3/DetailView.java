@@ -103,6 +103,21 @@ public class DetailView extends StackPane implements Subscriber {
             gc.setLineWidth(2);
             gc.fillRect(entity.getX(), entity.getY(), entity.getW(), entity.getH());
             gc.strokeRect(entity.getX(), entity.getY(), entity.getW(), entity.getH());
+
+            if (imodel.getSelectedBox() == entity) {
+                gc.setFill(Color.WHITE);
+                double radius = imodel.getHandleRadius();
+
+                gc.strokeOval(entity.getX() - radius, entity.getY() - radius, 2 * radius, 2 * radius);
+                gc.strokeOval(entity.getX() + entity.getW() - radius, entity.getY() - radius, 2 * radius, 2 * radius);
+                gc.strokeOval(entity.getX() - radius, entity.getY() + entity.getH() - radius, 2 * radius, 2 * radius);
+                gc.strokeOval(entity.getX() + entity.getW() - radius, entity.getY() + entity.getH() - radius, 2 * radius, 2 * radius);
+                gc.fillOval(entity.getX() - radius, entity.getY() - radius, 2 * radius, 2 * radius);
+                gc.fillOval(entity.getX() + entity.getW() - radius, entity.getY() - radius, 2 * radius, 2 * radius);
+                gc.fillOval(entity.getX() - radius, entity.getY() + entity.getH() - radius, 2 * radius, 2 * radius);
+                gc.fillOval(entity.getX() + entity.getW() - radius, entity.getY() + entity.getH() - radius, 2 * radius, 2 * radius);
+
+            }
         });
         gc.restore();
     }
