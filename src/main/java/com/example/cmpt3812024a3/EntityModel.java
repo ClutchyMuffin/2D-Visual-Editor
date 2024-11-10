@@ -57,23 +57,23 @@ public class EntityModel {
 
     /**
      * Check if any box matches the given coordinates
-     * @param x x-coordinate
-     * @param y y-coordinate
+     * @param mx x-coordinate
+     * @param my y-coordinate
      * @return true or false
      */
-    public boolean contains(double x, double y) {
-        return boxes.stream().anyMatch(box -> box.contains(x,y));
+    public boolean contains(double mx, double my) {
+        return boxes.stream().anyMatch(box -> box.contains(mx,my));
     }
 
     /**
      * Return the box that matches the given coordinates
-     * @param x x-coordinate
-     * @param y y-coordinate
+     * @param mx x-coordinate
+     * @param my y-coordinate
      * @return the box that matches given coordinates
      */
-    public Box whichBox(double x, double y) {
+    public Box whichBox(double mx, double my) {
         return boxes.stream()
-                .filter(box -> box.contains(x,y))
+                .filter(box -> box.contains(mx,my))
                 .findFirst()
                 .orElse(null);
     }
