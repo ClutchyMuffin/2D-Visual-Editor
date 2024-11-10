@@ -7,7 +7,7 @@ public class InteractionModel {
     private final ArrayList<Subscriber> subs;
     private Box selectedBox;
     private double worldSize = 2000;
-    private double viewLeft, viewTop;
+    private double viewPortLeft, viewPortTop;
 
     /**
      * Constructor for the InteractionModel Class
@@ -25,8 +25,12 @@ public class InteractionModel {
      * @param dy y-axis movement
      */
     public void moveViewPort(double dx, double dy) {
-        viewLeft += dx;
-        viewTop += dy;
+
+
+
+
+        viewPortLeft += dx;
+        viewPortTop += dy;
         notifySubscribers();
     }
 
@@ -48,13 +52,13 @@ public class InteractionModel {
      * Returns the left offset
      * @return left
      */
-    public double getViewLeft() { return viewLeft; }
+    public double getViewPortLeft() { return viewPortLeft; }
 
     /**
      * Returns the top offset
      * @return top
      */
-    public double getViewTop() { return viewTop; }
+    public double getViewPortTop() { return viewPortTop; }
 
 
     // ----------------- SETTERS ----------------- //
@@ -69,13 +73,13 @@ public class InteractionModel {
      * Sets the left offset to the given value
      * @param viewLeft value to set
      */
-    public void setViewLeft(double viewLeft) { this.viewLeft = viewLeft; }
+    public void setViewLeft(double viewLeft) { this.viewPortLeft = viewLeft; }
 
     /**
      * Sets the top offset to the given value
      * @param viewTop value to set
      */
-    public void setViewTop(double viewTop) { this.viewTop = viewTop; }
+    public void setViewTop(double viewTop) { this.viewPortTop = viewTop; }
 
 
     // ----------------- SUBSCRIBERS ----------------- //

@@ -102,8 +102,8 @@ public class AppController {
             prevX = event.getX();
             prevY = event.getY();
 
-            correctedX = event.getX() - imodel.getViewLeft();
-            correctedY = event.getY() - imodel.getViewTop();
+            correctedX = event.getX() - imodel.getViewPortLeft();
+            correctedY = event.getY() - imodel.getViewPortTop();
 
             if (model.contains(correctedX, correctedY)) {
                 imodel.setSelectedBox(model.whichBox(correctedX, correctedY));

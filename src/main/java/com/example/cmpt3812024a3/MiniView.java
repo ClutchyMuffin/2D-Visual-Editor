@@ -1,6 +1,5 @@
 package com.example.cmpt3812024a3;
 
-import javafx.geometry.Pos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -36,7 +35,7 @@ public class MiniView extends DetailView {
 
         // Draw the detailView rectangle
         gc.setFill(Color.YELLOW);
-        gc.fillRect(-imodel.getViewLeft(), -imodel.getViewTop(), getViewWidth(), getViewHeight());
+        gc.fillRect(-imodel.getViewPortLeft(), -imodel.getViewPortTop(), getViewWidth(), getViewHeight());
 
         // Draw the boxes
         model.getBoxes().forEach(entity -> {

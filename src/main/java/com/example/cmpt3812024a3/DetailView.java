@@ -1,6 +1,5 @@
 package com.example.cmpt3812024a3;
 
-import javafx.application.Platform;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.StackPane;
@@ -91,7 +90,7 @@ public class DetailView extends StackPane implements Subscriber {
     public void draw() {
         gc.clearRect(0, 0, myCanvas.getWidth(), myCanvas.getHeight());
         gc.save();
-        gc.translate(imodel.getViewLeft(), imodel.getViewTop());
+        gc.translate(imodel.getViewPortLeft(), imodel.getViewPortTop());
         model.getBoxes().forEach(entity -> {
             if (imodel.getSelectedBox() == entity) {
                 gc.setFill(Color.ORANGE);
