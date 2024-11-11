@@ -4,21 +4,21 @@ public class Box {
 
     private double x;
     private double y;
-    private double w;
-    private double h;
+    private double width;
+    private double height;
 
     /**
      * Constructor of the Box Class
      * @param x top-left
      * @param y top-right
-     * @param w width
-     * @param h height
+     * @param width width
+     * @param height height
      */
-    public Box(double x, double y, double w, double h) {
+    public Box(double x, double y, double width, double height) {
         this.x = x;
         this.y = y;
-        this.w = w;
-        this.h = h;
+        this.width = width;
+        this.height = height;
     }
 
     /**
@@ -28,40 +28,26 @@ public class Box {
      * @return true or false
      */
     public boolean contains(double mx, double my) {
-        return (mx >= this.x) && (mx <= this.x + this.w) &&
-                (my >= this.y) && (my <= this.y + this.h) ;
+        return (mx >= this.x) && (mx <= this.x + this.width) &&
+                (my >= this.y) && (my <= this.y + this.height) ;
     }
 
-    /**
-     * Move the box by the given values
-     * @param dx x-coordinate
-     * @param dy y-coordinate
-     */
-    public void move(double dx, double dy) {
-        this.x += dx;
-        this.y += dy;
-    }
-
-    public void updateSize(double dw, double dh) {
-        this.w += dw;
-        this.h += dh;
-    }
-
-    public void updatePosition(double x, double y) {
-        this.x = x;
-        this.y = y;
-    }
+    // ----------------- ADDERS ----------------- //
+    public void addX(double x) { this.x += x; }
+    public void addY(double y) { this.y += y; }
+    public void addWidth(double newWidth) { width += newWidth; }
+    public void addHeight(double newHeight) { height += newHeight;  }
 
     // ----------------- GETTERS ----------------- //
     public double getX() { return x; }
     public double getY() { return y; }
-    public double getW() { return w; }
-    public double getH() { return h; }
+    public double getW() { return width; }
+    public double getH() { return height; }
 
     // ----------------- SETTERS ----------------- //
     public void setX(double nx) { this.x = nx; }
     public void setY(double ny) { this.y = ny; }
-    public void setW(double nw) { this.w = nw; }
-    public void setH(double nh) { this.h = nh; }
+    public void setW(double nw) { this.width = nw; }
+    public void setH(double nh) { this.height = nh; }
 
 }
