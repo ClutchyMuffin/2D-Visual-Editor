@@ -101,7 +101,6 @@ public class AppController {
                 Portal portal = new Portal(worldX, worldY, 1, 1);
                 model.addPortal(portal);
                 iModel.setSelectedBox(portal);
-                model.notifySubscribers();
                 currentState = creating;
             }
             else if (iModel.getSelectedBox() != null && iModel.onHandle(worldX, worldY) != 0) {
@@ -151,17 +150,9 @@ public class AppController {
             prevX = event.getX();
             prevY = event.getY();
 
-            if (iModel.getSelectedBox() instanceof Portal) {
-                Portal portal = (Portal) iModel.getSelectedBox();
-                portal.addX(dx);
-                portal.addY(dy);
-                portal.setViewPortLeft(portal.getViewPortLeft() + dx);
-                portal.setViewPortTop(portal.getViewPortTop() + dy);
-            }
-            else {
-                iModel.getSelectedBox().addX(dx);
-                iModel.getSelectedBox().addY(dy);
-            }
+            iModel.getSelectedBox().addX(dx);
+            iModel.getSelectedBox().addY(dy);
+
             model.notifySubscribers();
         }
 
