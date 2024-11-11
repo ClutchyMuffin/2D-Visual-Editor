@@ -94,46 +94,66 @@ public class DetailView extends StackPane implements Subscriber {
 
         gc.save();
         gc.translate(-iModel.getViewPortLeft(), -iModel.getViewPortTop());
-
         // Go through entity list and draw all
         model.getBoxes().forEach(box -> {
-
-            if (iModel.getSelectedBox() == box) {
-                gc.setFill(Color.ORANGE);
+            if (box instanceof Portal) {
+                Portal portal = (Portal) box;
+                gc.save();
+                gc.beginPath();
+                gc.strokeRect(portal.getX(), portal.getY(), portal.getWidth(), portal.getHeight());
+                gc.rect(portal.getX(), portal.getY(), portal.getWidth(), portal.getHeight());
+                gc.clip();
+                gc.translate(portal.getViewPortLeft(), portal.getViewPortTop());
+                gc.scale(portal.getScaleFactor(), portal.getScaleFactor());
+                model.getBoxes().forEach(innerElement -> {
+                    if (!(innerElement instanceof Portal)) {
+                        drawElement(innerElement);
+                    }
+                });
+                gc.restore();
             }
             else {
-                gc.setFill(Color.BLUE);
-            }
-
-            // Draw boxes
-            gc.setLineWidth(2);
-            gc.fillRect(box.getX(), box.getY(), box.getWidth(), box.getHeight());
-            gc.strokeRect(box.getX(), box.getY(), box.getWidth(), box.getHeight());
-
-            // Draw handles on the selected box
-            if (iModel.getSelectedBox() == box) {
-                gc.setFill(Color.WHITE);
-                double radius = iModel.getHandleRadius();
-
-                // Top Left
-                gc.strokeOval(box.getX() - radius, box.getY() - radius, 2 * radius, 2 * radius);
-                gc.fillOval(box.getX() - radius, box.getY() - radius, 2 * radius, 2 * radius);
-
-                // Top Right
-                gc.strokeOval(box.getX() + box.getWidth() - radius, box.getY() - radius, 2 * radius, 2 * radius);
-                gc.fillOval(box.getX() + box.getWidth() - radius, box.getY() - radius, 2 * radius, 2 * radius);
-
-                // Bottom Left
-                gc.strokeOval(box.getX() - radius, box.getY() + box.getHeight() - radius, 2 * radius, 2 * radius);
-                gc.fillOval(box.getX() - radius, box.getY() + box.getHeight() - radius, 2 * radius, 2 * radius);
-
-                // Bottom Right
-                gc.strokeOval(box.getX() + box.getWidth() - radius, box.getY() + box.getHeight() - radius, 2 * radius, 2 * radius);
-                gc.fillOval(box.getX() + box.getWidth() - radius, box.getY() + box.getHeight() - radius, 2 * radius, 2 * radius);
-
+                drawElement(box);
             }
         });
         gc.restore();
+    }
+
+    public void drawElement(Box box) {
+        if (iModel.getSelectedBox() == box) {
+            gc.setFill(Color.ORANGE);
+        }
+        else {
+            gc.setFill(Color.BLUE);
+        }
+
+        // Draw boxes
+        gc.setLineWidth(2);
+        gc.fillRect(box.getX(), box.getY(), box.getWidth(), box.getHeight());
+        gc.strokeRect(box.getX(), box.getY(), box.getWidth(), box.getHeight());
+
+        // Draw handles on the selected box
+        if (iModel.getSelectedBox() == box) {
+            gc.setFill(Color.WHITE);
+            double radius = iModel.getHandleRadius();
+
+            // Top Left
+            gc.strokeOval(box.getX() - radius, box.getY() - radius, 2 * radius, 2 * radius);
+            gc.fillOval(box.getX() - radius, box.getY() - radius, 2 * radius, 2 * radius);
+
+            // Top Right
+            gc.strokeOval(box.getX() + box.getWidth() - radius, box.getY() - radius, 2 * radius, 2 * radius);
+            gc.fillOval(box.getX() + box.getWidth() - radius, box.getY() - radius, 2 * radius, 2 * radius);
+
+            // Bottom Left
+            gc.strokeOval(box.getX() - radius, box.getY() + box.getHeight() - radius, 2 * radius, 2 * radius);
+            gc.fillOval(box.getX() - radius, box.getY() + box.getHeight() - radius, 2 * radius, 2 * radius);
+
+            // Bottom Right
+            gc.strokeOval(box.getX() + box.getWidth() - radius, box.getY() + box.getHeight() - radius, 2 * radius, 2 * radius);
+            gc.fillOval(box.getX() + box.getWidth() - radius, box.getY() + box.getHeight() - radius, 2 * radius, 2 * radius);
+
+        }
     }
 
     @Override

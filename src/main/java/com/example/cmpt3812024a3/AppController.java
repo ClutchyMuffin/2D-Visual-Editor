@@ -96,7 +96,15 @@ public class AppController {
             worldX = event.getX() + iModel.getViewPortLeft();
             worldY = event.getY() + iModel.getViewPortTop();
 
-            if (iModel.getSelectedBox() != null && iModel.onHandle(worldX, worldY) != 0) {
+            if (event.isControlDown()) {
+                System.out.println("Creating Portal");
+                Portal portal = new Portal(worldX, worldY, 1, 1);
+                model.addPortal(portal);
+                iModel.setSelectedBox(portal);
+                model.notifySubscribers();
+                currentState = creating;
+            }
+            else if (iModel.getSelectedBox() != null && iModel.onHandle(worldX, worldY) != 0) {
                 currentState = resizing;
             }
             else if (model.contains(worldX, worldY)) {
@@ -143,9 +151,17 @@ public class AppController {
             prevX = event.getX();
             prevY = event.getY();
 
-            iModel.getSelectedBox().addX(dx);
-            iModel.getSelectedBox().addY(dy);
-
+            if (iModel.getSelectedBox() instanceof Portal) {
+                Portal portal = (Portal) iModel.getSelectedBox();
+                portal.addX(dx);
+                portal.addY(dy);
+                portal.setViewPortLeft(portal.getViewPortLeft() + dx);
+                portal.setViewPortTop(portal.getViewPortTop() + dy);
+            }
+            else {
+                iModel.getSelectedBox().addX(dx);
+                iModel.getSelectedBox().addY(dy);
+            }
             model.notifySubscribers();
         }
 
