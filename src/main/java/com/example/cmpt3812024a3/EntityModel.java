@@ -35,12 +35,22 @@ public class EntityModel {
         notifySubscribers();
     }
 
+    public void addPortal(Portal portal) {
+        boxes.add(portal);
+        notifySubscribers();
+    }
+
     /**
      * Remove the box from the models list
      * @param box box to remove
      */
     public void removeBox(Box box) {
         boxes.remove(box);
+        notifySubscribers();
+    }
+
+    public void removePortal(Portal portal) {
+        boxes.remove(portal);
         notifySubscribers();
     }
 
