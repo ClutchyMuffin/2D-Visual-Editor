@@ -6,10 +6,10 @@ import javafx.scene.input.MouseEvent;
 public class AppController {
 
     private EntityModel model;
-    private InteractionModel imodel;
+    private InteractionModel iModel;
     private ControllerState currentState;
-    private double dx, dy, dw, dh;
-    private double prevX, prevY, correctedX, correctedY;
+    private double prevX, prevY;
+    private double worldX, worldY;
 
     /**
      * Constructor for the Controller class
@@ -34,7 +34,7 @@ public class AppController {
      * @param im imodel
      */
     public void setIModel(InteractionModel im) {
-        this.imodel = im;
+        this.iModel = im;
     }
 
 
@@ -44,41 +44,31 @@ public class AppController {
      * Handle the Mouse Pressed event
      * @param event mouse event
      */
-    public void handlePressed(MouseEvent event) {
-        currentState.handlePressed(event);
-    }
+    public void handlePressed(MouseEvent event) { currentState.handlePressed(event); }
 
     /**
      * Handle the Mouse Dragged event
      * @param event mouse event
      */
-    public void handleDragged(MouseEvent event) {
-        currentState.handleDragged(event);
-    }
+    public void handleDragged(MouseEvent event) { currentState.handleDragged(event); }
 
     /**
      * Handle the Mouse Released event
      * @param event mouse event
      */
-    public void handleReleased(MouseEvent event) {
-        currentState.handleReleased(event);
-    }
+    public void handleReleased(MouseEvent event) { currentState.handleReleased(event); }
 
     /**
      * Handle the Key Pressed event
      * @param event key event
      */
-    public void handleKeyPressed(KeyEvent event) {
-        currentState.handleKeyPressed(event);
-    }
+    public void handleKeyPressed(KeyEvent event) { currentState.handleKeyPressed(event); }
 
     /**
      * Handle the Key Released event
      * @param event key event
      */
-    public void handleKeyReleased(KeyEvent event) {
-        currentState.handleKeyReleased(event);
-    }
+    public void handleKeyReleased(KeyEvent event) { currentState.handleKeyReleased(event); }
 
 
     // ----------------- STATES ----------------- //
@@ -103,17 +93,14 @@ public class AppController {
             prevX = event.getX();
             prevY = event.getY();
 
-            correctedX = event.getX() - imodel.getViewPortLeft();
-            correctedY = event.getY() - imodel.getViewPortTop();
+            worldX = event.getX() + iModel.getViewPortLeft();
+            worldY = event.getY() + iModel.getViewPortTop();
 
-            if (imodel.getSelectedBox() != null && imodel.onHandle(correctedX, correctedY)) {
-                System.out.println("resizing");
+            if (iModel.getSelectedBox() != null && iModel.onHandle(worldX, worldY) != 0) {
                 currentState = resizing;
             }
-
-            if (model.contains(correctedX, correctedY)) {
-                imodel.setSelectedBox(model.whichBox(correctedX, correctedY));
-                model.notifySubscribers();
+            else if (model.contains(worldX, worldY)) {
+                iModel.setSelectedBox(model.whichBox(worldX, worldY));
                 currentState = dragging;
             }
             else {
@@ -122,16 +109,20 @@ public class AppController {
         }
 
         public void handleKeyPressed(KeyEvent event) {
+
             switch (event.getCode()) {
                 case DELETE:
                 case BACK_SPACE:
-                    if (imodel.getSelectedBox() != null) {
-                        model.removeBox(imodel.getSelectedBox());
-                        imodel.setSelectedBox(null);
+                    if (iModel.getSelectedBox() != null) {
+                        model.removeBox(iModel.getSelectedBox());
+                        iModel.setSelectedBox(null);
                     }
                     break;
+
                 case SHIFT:
                     currentState = panning;
+                    break;
+
                 default:
                     break;
             }
@@ -144,11 +135,18 @@ public class AppController {
     ControllerState dragging = new ControllerState() {
 
         public void handleDragged(MouseEvent event) {
+            double dx, dy;
+
             dx = event.getX() - prevX;
             dy = event.getY() - prevY;
+
             prevX = event.getX();
             prevY = event.getY();
-            model.moveBox(imodel.getSelectedBox(), dx, dy);
+
+            iModel.getSelectedBox().addX(dx);
+            iModel.getSelectedBox().addY(dy);
+
+            model.notifySubscribers();
         }
 
         public void handleReleased(MouseEvent event) {
@@ -163,14 +161,13 @@ public class AppController {
     ControllerState create_or_unselect = new ControllerState() {
 
         public void handleDragged(MouseEvent event) {
-            model.addBox(correctedX, correctedY, 0 ,0);
-            imodel.setSelectedBox(model.whichBox(correctedX, correctedY));
+            model.addBox(worldX, worldY, 0 ,0);
+            iModel.setSelectedBox(model.whichBox(worldX, worldY));
             currentState = creating;
         }
 
         public void handleReleased(MouseEvent event) {
-            imodel.setSelectedBox(null);
-            model.notifySubscribers();
+            iModel.setSelectedBox(null);
             currentState = ready;
         }
 
@@ -182,12 +179,18 @@ public class AppController {
     ControllerState creating = new ControllerState() {
 
         public void handleDragged(MouseEvent event) {
-            dx = event.getX() - prevX;
-            dy = event.getY() - prevY;
-            prevX = event.getX();
-            prevY = event.getY();
-            imodel.getSelectedBox().updateSize(dx, dy);
-            model.notifySubscribers();
+
+            double dw, dh;
+
+            dw = Math.abs(event.getX() + iModel.getViewPortLeft() - worldX);
+            dh = Math.abs(event.getY() + iModel.getViewPortTop() - worldY);
+
+            iModel.getSelectedBox().setX(Math.min(event.getX() + iModel.getViewPortLeft(), worldX));
+            iModel.getSelectedBox().setY(Math.min(event.getY() + iModel.getViewPortTop(), worldY));
+            iModel.getSelectedBox().setWidth(dw);
+            iModel.getSelectedBox().setHeight(dh);
+
+            iModel.notifySubscribers();
         }
 
         public void handleReleased(MouseEvent event) {
@@ -207,11 +210,16 @@ public class AppController {
         }
 
         public void handleDragged(MouseEvent event) {
-            dx = event.getX() - prevX;
-            dy = event.getY() - prevY;
+
+            double dx, dy;
+
+            dx = prevX - event.getX();
+            dy = prevY - event.getY();
+
             prevX = event.getX();
             prevY = event.getY();
-            imodel.moveViewPort(dx, dy);
+
+            iModel.moveViewPort(dx, dy);
         }
 
         public void handleKeyReleased(KeyEvent event) {
@@ -224,42 +232,48 @@ public class AppController {
     ControllerState resizing = new ControllerState() {
 
         public void handleDragged(MouseEvent event) {
-            double newX = event.getX() - imodel.getViewPortLeft();
-            double newY = event.getY() - imodel.getViewPortTop();
-            dx = newX - correctedX;
-            dy = newY - correctedY;
 
-            int handle = imodel.whichHandle(correctedX, correctedY);
+            int handle = iModel.onHandle(worldX, worldY);
+
+            double newX = event.getX() + iModel.getViewPortLeft();
+            double newY = event.getY() + iModel.getViewPortTop();
+            double dX = newX - worldX;
+            double dY = newY - worldY;
+
             switch (handle) {
                 case 1:
-                    imodel.getSelectedBox().updatePosition(imodel.getSelectedBox().getX() + dx, imodel.getSelectedBox().getY() + dy);
-                    imodel.getSelectedBox().setW(imodel.getSelectedBox().getW() - dx);
-                    imodel.getSelectedBox().setH(imodel.getSelectedBox().getH() - dy);
+                    iModel.getSelectedBox().setX(iModel.getSelectedBox().getX() + dX);
+                    iModel.getSelectedBox().setY(iModel.getSelectedBox().getY() + dY);
+                    iModel.getSelectedBox().setWidth(iModel.getSelectedBox().getWidth() - dX);
+                    iModel.getSelectedBox().setHeight(iModel.getSelectedBox().getHeight() - dY);
                     break;
-
                 case 2:
-                    imodel.getSelectedBox().updatePosition(imodel.getSelectedBox().getX(), imodel.getSelectedBox().getY() + dy);
-                    imodel.getSelectedBox().setW(imodel.getSelectedBox().getW() + dx);
-                    imodel.getSelectedBox().setH(imodel.getSelectedBox().getH() - dy);
+                    iModel.getSelectedBox().setX(iModel.getSelectedBox().getX());
+                    iModel.getSelectedBox().setY(iModel.getSelectedBox().getY() + dY);
+                    iModel.getSelectedBox().setWidth(iModel.getSelectedBox().getWidth() + dX);
+                    iModel.getSelectedBox().setHeight(iModel.getSelectedBox().getHeight() - dY);
                     break;
-
                 case 3:
-                    imodel.getSelectedBox().updatePosition(imodel.getSelectedBox().getX() + dx, imodel.getSelectedBox().getY());
-                    imodel.getSelectedBox().setW(imodel.getSelectedBox().getW() - dx);
-                    imodel.getSelectedBox().setH(imodel.getSelectedBox().getH() + dy);
+                    iModel.getSelectedBox().setX(iModel.getSelectedBox().getX() + dX);
+                    iModel.getSelectedBox().setY(iModel.getSelectedBox().getY());
+                    iModel.getSelectedBox().setWidth(iModel.getSelectedBox().getWidth() - dX);
+                    iModel.getSelectedBox().setHeight(iModel.getSelectedBox().getHeight() + dY);
                     break;
-
                 case 4:
-                    imodel.getSelectedBox().updatePosition(imodel.getSelectedBox().getX(), imodel.getSelectedBox().getY());
-                    imodel.getSelectedBox().setW(imodel.getSelectedBox().getW() + dx);
-                    imodel.getSelectedBox().setH(imodel.getSelectedBox().getH() + dy);
+                    iModel.getSelectedBox().setWidth(iModel.getSelectedBox().getWidth() + dX);
+                    iModel.getSelectedBox().setHeight(iModel.getSelectedBox().getHeight() + dY);
+                    break;
+                default:
                     break;
             }
+
+            worldX = newX;
+            worldY = newY;
+            model.notifySubscribers();
 
         }
 
         public void handleReleased(MouseEvent event) {
-            System.out.println("releasing");
             currentState = ready;
         }
     };
