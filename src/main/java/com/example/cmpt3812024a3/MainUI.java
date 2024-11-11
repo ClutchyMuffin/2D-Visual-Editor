@@ -8,30 +8,33 @@ public class MainUI extends StackPane {
     public MainUI() {
 
         AppController controller = new AppController();
+        MiniViewController mController = new MiniViewController();
         EntityModel model = new EntityModel();
-        InteractionModel imodel = new InteractionModel();
+        InteractionModel iModel = new InteractionModel();
         DetailView detailView = new DetailView();
         MiniView miniView = new MiniView();
 
         // Controller
         controller.setModel(model);
-        controller.setIModel(imodel);
+        controller.setIModel(iModel);
+        mController.setModel(model);
+        mController.setiModel(iModel);
 
         // Model
         model.addSubscriber(detailView);
         model.addSubscriber(miniView);
-        imodel.addSubscriber(detailView);
-        imodel.addSubscriber(miniView);
+        iModel.addSubscriber(detailView);
+        iModel.addSubscriber(miniView);
 
         // DetailView
         detailView.setModel(model);
-        detailView.setIModel(imodel);
+        detailView.setIModel(iModel);
         detailView.setupEvents(controller);
 
         // MiniView
         miniView.setModel(model);
-        miniView.setIModel(imodel);
-        miniView.setupEvents(controller);
+        miniView.setIModel(iModel);
+        miniView.setupEvents(mController);
 
         Platform.runLater(detailView::requestFocus);
         this.getChildren().addAll(detailView, miniView);
