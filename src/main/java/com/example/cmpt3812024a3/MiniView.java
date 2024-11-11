@@ -25,6 +25,7 @@ public class MiniView extends DetailView {
 
         StackPane.setAlignment(this, Pos.TOP_LEFT); // Position this at the top left
         this.getChildren().add(miniCanvas);
+        this.setOpacity(0.5);
     }
 
 
