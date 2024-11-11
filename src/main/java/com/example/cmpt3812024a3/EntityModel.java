@@ -49,11 +49,6 @@ public class EntityModel {
         notifySubscribers();
     }
 
-    public void removePortal(Portal portal) {
-        boxes.remove(portal);
-        notifySubscribers();
-    }
-
     // ----------------- ENTITY CHECKS ----------------- //
 
     /**
