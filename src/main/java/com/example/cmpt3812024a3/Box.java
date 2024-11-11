@@ -41,13 +41,13 @@ public class Box {
     // ----------------- GETTERS ----------------- //
     public double getX() { return x; }
     public double getY() { return y; }
-    public double getW() { return width; }
-    public double getH() { return height; }
+    public double getWidth() { return width; }
+    public double getHeight() { return height; }
 
     // ----------------- SETTERS ----------------- //
     public void setX(double nx) { this.x = nx; }
     public void setY(double ny) { this.y = ny; }
-    public void setW(double nw) { this.width = nw; }
-    public void setH(double nh) { this.height = nh; }
+    public void setWidth(double nw) { this.width = nw; }
+    public void setHeight(double nh) { this.height = nh; }
 
 }
