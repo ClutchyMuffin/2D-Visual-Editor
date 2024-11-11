@@ -103,7 +103,7 @@ public class DetailView extends StackPane implements Subscriber {
                 gc.strokeRect(portal.getX(), portal.getY(), portal.getWidth(), portal.getHeight());
                 gc.rect(portal.getX(), portal.getY(), portal.getWidth(), portal.getHeight());
                 gc.clip();
-                gc.translate(portal.getViewPortLeft(), portal.getViewPortTop());
+                gc.translate(portal.getPortalLeft(), portal.getPortalTop());
                 gc.scale(portal.getScaleFactor(), portal.getScaleFactor());
                 model.getBoxes().forEach(innerElement -> {
                     if (!(innerElement instanceof Portal)) {
@@ -119,7 +119,7 @@ public class DetailView extends StackPane implements Subscriber {
         gc.restore();
     }
 
-    public void drawElement(Box box) {
+    private void drawElement(Box box) {
         if (iModel.getSelectedBox() == box) {
             gc.setFill(Color.ORANGE);
         }
