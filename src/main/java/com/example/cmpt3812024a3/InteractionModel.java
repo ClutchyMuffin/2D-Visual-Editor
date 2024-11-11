@@ -6,9 +6,9 @@ public class InteractionModel {
 
     private final ArrayList<Subscriber> subs;
     private Box selectedBox;
-    private double worldSize = 2000;
+    private final double worldSize = 2000;
     private double viewPortLeft, viewPortTop, viewPortWidth, viewPortHeight;
-    private double handleRadius = 8;
+    private final double handleRadius = 8;
 
     /**
      * Constructor for the InteractionModel Class
