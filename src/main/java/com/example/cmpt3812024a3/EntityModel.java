@@ -15,6 +15,8 @@ public class EntityModel {
         subs = new ArrayList<>();
     }
 
+    // ----------------- BOXES ----------------- //
+
     /**
      * Retrieve the list of boxes in the model
      * @return arraylist of boxes
@@ -39,17 +41,6 @@ public class EntityModel {
      */
     public void removeBox(Box box) {
         boxes.remove(box);
-        notifySubscribers();
-    }
-
-    /**
-     * Move a box by the given values
-     * @param box box to move
-     * @param dx x-value to move
-     * @param dy y-value to move
-     */
-    public void moveBox(Box box, double dx, double dy) {
-        box.move(dx, dy);
         notifySubscribers();
     }
 
