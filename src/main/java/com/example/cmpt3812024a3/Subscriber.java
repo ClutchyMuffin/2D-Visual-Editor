@@ -5,5 +5,5 @@ public interface Subscriber {
     /**
      * Model has changed, redraw
      */
-    public void modelChanged();
+    void modelChanged();
 }
