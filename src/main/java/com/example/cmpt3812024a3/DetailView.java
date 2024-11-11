@@ -8,38 +8,38 @@ import javafx.scene.paint.Color;
 public class DetailView extends StackPane implements Subscriber {
 
     private Canvas myCanvas;
-    private double width, height;
     private GraphicsContext gc;
+    private double viewWidth, viewHeight;
     protected EntityModel model;
-    protected InteractionModel imodel;
+    protected InteractionModel iModel;
 
     /**
      * Constructor of the View Class
      */
     public DetailView() {
 
-        this.width = 800;
-        this.height = 800;
-        myCanvas = new Canvas(width, height);
+        viewWidth = 800;
+        viewHeight = 800;
+        myCanvas = new Canvas(viewWidth, viewHeight);
         gc = myCanvas.getGraphicsContext2D();
+
+        this.setMinSize(0,0);
+        this.getChildren().add(myCanvas);
 
         // Fix the resizing
         this.widthProperty().addListener((observable, oldValue, newValue) -> {
-            this.width = newValue.doubleValue();
-            myCanvas.setWidth(width);
-            imodel.setViewPortWidth(width);
+            this.viewWidth = newValue.doubleValue();
+            myCanvas.setWidth(this.viewWidth);
+            iModel.setViewPortWidth(this.viewWidth);
             draw();
         });
 
         this.heightProperty().addListener((observable, oldValue, newValue) -> {
-            this.height = newValue.doubleValue();
-            myCanvas.setHeight(height);
-            imodel.setViewPortHeight(height);
+            this.viewHeight = newValue.doubleValue();
+            myCanvas.setHeight(this.viewHeight);
+            iModel.setViewPortHeight(this.viewHeight);
             draw();
         });
-
-        this.getChildren().add(myCanvas);
-
     }
 
     // ----------------- GETTERS ----------------- //
@@ -48,13 +48,13 @@ public class DetailView extends StackPane implements Subscriber {
      * Get the width of the view
      * @return width
      */
-    public double getViewWidth() { return this.width; }
+    public double getViewWidth() { return this.viewWidth; }
 
     /**
      * Get the height of the view
      * @return height
      */
-    public double getViewHeight() { return this.height; }
+    public double getViewHeight() { return this.viewHeight; }
 
 
     // ----------------- SETTERS ----------------- //
@@ -69,16 +69,16 @@ public class DetailView extends StackPane implements Subscriber {
      * Set the given value as the imodel of the view
      * @param im imodel
      */
-    public void setIModel(InteractionModel im) { this.imodel = im; }
+    public void setIModel(InteractionModel im) { this.iModel = im; }
 
     /**
      * Set up the events of the view to be passed to controller
      * @param controller controller of the application
      */
     public void setupEvents(AppController controller) {
-        setOnMousePressed(controller::handlePressed);
-        setOnMouseDragged(controller::handleDragged);
-        setOnMouseReleased(controller::handleReleased);
+        myCanvas.setOnMousePressed(controller::handlePressed);
+        myCanvas.setOnMouseDragged(controller::handleDragged);
+        myCanvas.setOnMouseReleased(controller::handleReleased);
         setOnKeyPressed(controller::handleKeyPressed);
         setOnKeyReleased(controller::handleKeyReleased);
     }
@@ -91,31 +91,45 @@ public class DetailView extends StackPane implements Subscriber {
      */
     public void draw() {
         gc.clearRect(0, 0, myCanvas.getWidth(), myCanvas.getHeight());
+
         gc.save();
-        gc.translate(imodel.getViewPortLeft(), imodel.getViewPortTop());
-        model.getBoxes().forEach(entity -> {
-            if (imodel.getSelectedBox() == entity) {
+        gc.translate(-iModel.getViewPortLeft(), -iModel.getViewPortTop());
+
+        // Go through entity list and draw all
+        model.getBoxes().forEach(box -> {
+
+            if (iModel.getSelectedBox() == box) {
                 gc.setFill(Color.ORANGE);
             }
             else {
                 gc.setFill(Color.BLUE);
             }
+
+            // Draw boxes
             gc.setLineWidth(2);
-            gc.fillRect(entity.getX(), entity.getY(), entity.getW(), entity.getH());
-            gc.strokeRect(entity.getX(), entity.getY(), entity.getW(), entity.getH());
+            gc.fillRect(box.getX(), box.getY(), box.getWidth(), box.getHeight());
+            gc.strokeRect(box.getX(), box.getY(), box.getWidth(), box.getHeight());
 
-            if (imodel.getSelectedBox() == entity) {
+            // Draw handles on the selected box
+            if (iModel.getSelectedBox() == box) {
                 gc.setFill(Color.WHITE);
-                double radius = imodel.getHandleRadius();
+                double radius = iModel.getHandleRadius();
 
-                gc.strokeOval(entity.getX() - radius, entity.getY() - radius, 2 * radius, 2 * radius);
-                gc.strokeOval(entity.getX() + entity.getW() - radius, entity.getY() - radius, 2 * radius, 2 * radius);
-                gc.strokeOval(entity.getX() - radius, entity.getY() + entity.getH() - radius, 2 * radius, 2 * radius);
-                gc.strokeOval(entity.getX() + entity.getW() - radius, entity.getY() + entity.getH() - radius, 2 * radius, 2 * radius);
-                gc.fillOval(entity.getX() - radius, entity.getY() - radius, 2 * radius, 2 * radius);
-                gc.fillOval(entity.getX() + entity.getW() - radius, entity.getY() - radius, 2 * radius, 2 * radius);
-                gc.fillOval(entity.getX() - radius, entity.getY() + entity.getH() - radius, 2 * radius, 2 * radius);
-                gc.fillOval(entity.getX() + entity.getW() - radius, entity.getY() + entity.getH() - radius, 2 * radius, 2 * radius);
+                // Top Left
+                gc.strokeOval(box.getX() - radius, box.getY() - radius, 2 * radius, 2 * radius);
+                gc.fillOval(box.getX() - radius, box.getY() - radius, 2 * radius, 2 * radius);
+
+                // Top Right
+                gc.strokeOval(box.getX() + box.getWidth() - radius, box.getY() - radius, 2 * radius, 2 * radius);
+                gc.fillOval(box.getX() + box.getWidth() - radius, box.getY() - radius, 2 * radius, 2 * radius);
+
+                // Bottom Left
+                gc.strokeOval(box.getX() - radius, box.getY() + box.getHeight() - radius, 2 * radius, 2 * radius);
+                gc.fillOval(box.getX() - radius, box.getY() + box.getHeight() - radius, 2 * radius, 2 * radius);
+
+                // Bottom Right
+                gc.strokeOval(box.getX() + box.getWidth() - radius, box.getY() + box.getHeight() - radius, 2 * radius, 2 * radius);
+                gc.fillOval(box.getX() + box.getWidth() - radius, box.getY() + box.getHeight() - radius, 2 * radius, 2 * radius);
 
             }
         });
