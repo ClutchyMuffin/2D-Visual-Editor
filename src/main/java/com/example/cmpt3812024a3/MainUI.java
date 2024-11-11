@@ -23,15 +23,15 @@ public class MainUI extends StackPane {
         imodel.addSubscriber(detailView);
         imodel.addSubscriber(miniView);
 
-        // MiniView
-        miniView.setModel(model);
-        miniView.setIModel(imodel);
-        miniView.setupEvents(controller);
-
         // DetailView
         detailView.setModel(model);
         detailView.setIModel(imodel);
         detailView.setupEvents(controller);
+
+        // MiniView
+        miniView.setModel(model);
+        miniView.setIModel(imodel);
+        miniView.setupEvents(controller);
 
         Platform.runLater(detailView::requestFocus);
         this.getChildren().addAll(detailView, miniView);
