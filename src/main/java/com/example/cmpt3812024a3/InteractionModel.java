@@ -8,7 +8,7 @@ public class InteractionModel {
     private Box selectedBox;
     private double worldSize = 2000;
     private double viewPortLeft, viewPortTop, viewPortWidth, viewPortHeight;
-    private double handleRadius = 30;
+    private double handleRadius = 8;
 
     /**
      * Constructor for the InteractionModel Class
