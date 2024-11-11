@@ -234,6 +234,7 @@ public class AppController {
         }
     };
 
+
     // ----------------- RESIZING STATE ----------------- //
 
     ControllerState resizing = new ControllerState() {
@@ -248,25 +249,25 @@ public class AppController {
             double dY = newY - worldY;
 
             switch (handle) {
-                case 1:
+                case 1:  // Top-left handle
                     iModel.getSelectedBox().setX(iModel.getSelectedBox().getX() + dX);
                     iModel.getSelectedBox().setY(iModel.getSelectedBox().getY() + dY);
                     iModel.getSelectedBox().setWidth(iModel.getSelectedBox().getWidth() - dX);
                     iModel.getSelectedBox().setHeight(iModel.getSelectedBox().getHeight() - dY);
                     break;
-                case 2:
+                case 2:  // Top-right handle
                     iModel.getSelectedBox().setX(iModel.getSelectedBox().getX());
                     iModel.getSelectedBox().setY(iModel.getSelectedBox().getY() + dY);
                     iModel.getSelectedBox().setWidth(iModel.getSelectedBox().getWidth() + dX);
                     iModel.getSelectedBox().setHeight(iModel.getSelectedBox().getHeight() - dY);
                     break;
-                case 3:
+                case 3:  // Bottom-left handle
                     iModel.getSelectedBox().setX(iModel.getSelectedBox().getX() + dX);
                     iModel.getSelectedBox().setY(iModel.getSelectedBox().getY());
                     iModel.getSelectedBox().setWidth(iModel.getSelectedBox().getWidth() - dX);
                     iModel.getSelectedBox().setHeight(iModel.getSelectedBox().getHeight() + dY);
                     break;
-                case 4:
+                case 4:  // Bottom-right handle
                     iModel.getSelectedBox().setWidth(iModel.getSelectedBox().getWidth() + dX);
                     iModel.getSelectedBox().setHeight(iModel.getSelectedBox().getHeight() + dY);
                     break;

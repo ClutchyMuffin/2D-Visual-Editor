@@ -15,17 +15,65 @@ public class MiniViewController {
         currentState = ready;
     }
 
+    // ----------------- SETTERS ----------------- //
+
+    /**
+     * Set the model
+     * @param model model
+     */
     public void setModel(EntityModel model) { this.model = model; }
+
+    /**
+     * Set the imodel
+     * @param iModel imodel
+     */
     public void setiModel(InteractionModel iModel) { this.iModel = iModel; }
+
+    /**
+     * Set the scale of the miniView
+     * @param scale scale
+     */
     public void setScale(double scale) { this.scale = scale; }
 
+
+    // ----------------- HANDLERS ----------------- //
+
+    /**
+     * Handle the Mouse Pressed event
+     * @param event mouse event
+     */
     public void handlePressed(MouseEvent event) { currentState.handlePressed(event); }
+
+    /**
+     * Handle the Mouse Dragged event
+     * @param event mouse event
+     */
     public void handleReleased(MouseEvent event) { currentState.handleReleased(event); }
+
+    /**
+     * Handle the Mouse Released event
+     * @param event mouse event
+     */
     public void handleDragged(MouseEvent event) { currentState.handleDragged(event); }
+
+    /**
+     * Handle the Key Pressed event
+     * @param event key event
+     */
     public void handleKeyPressed(KeyEvent event) { currentState.handleKeyPressed(event); }
+
+    /**
+     * Handle the Key Released event
+     * @param event key event
+     */
     public void handleKeyReleased(KeyEvent event) { currentState.handleKeyReleased(event); }
 
 
+    // ----------------- STATES ----------------- //
+
+    /**
+     * Public class that defines the controller state & methods
+     */
     public abstract static class ControllerState {
         void handlePressed(MouseEvent event) {}
         void handleDragged(MouseEvent event) {}
@@ -33,6 +81,9 @@ public class MiniViewController {
         void handleKeyPressed(KeyEvent event) {}
         void handleKeyReleased(KeyEvent event) {}
     }
+
+
+    // ----------------- READY STATE ----------------- //
 
     ControllerState ready = new ControllerState() {
 
@@ -48,7 +99,7 @@ public class MiniViewController {
                 currentState = dragging;
             }
             else {
-                currentState = preparing;
+                currentState = create_or_unselect;
             }
         }
 
@@ -72,46 +123,7 @@ public class MiniViewController {
     };
 
 
-    ControllerState preparing = new ControllerState() {
-
-        public void handleDragged(MouseEvent event) {
-            model.addBox(prevX/scale, prevY/scale, 1/scale, 1/scale);
-            iModel.setSelectedBox(model.whichBox(prevX/scale, prevY/scale));
-            currentState = creating;
-        }
-
-        public void handleReleased(MouseEvent event) {
-            iModel.setSelectedBox(null);
-            currentState = ready;
-        }
-
-    };
-
-
-    ControllerState creating = new ControllerState() {
-
-        public void handleDragged(MouseEvent event) {
-
-            double dw, dh;
-
-            dw = Math.abs(event.getX() - prevX);
-            dh = Math.abs(event.getY() - prevY);
-
-            iModel.getSelectedBox().setX(Math.min(event.getX()/scale, prevX/scale));
-            iModel.getSelectedBox().setY(Math.min(event.getY()/scale, prevY/scale));
-            iModel.getSelectedBox().setWidth(dw/scale);
-            iModel.getSelectedBox().setHeight(dh/scale);
-
-            model.notifySubscribers();
-
-        }
-
-        public void handleReleased(MouseEvent event) {
-            currentState = ready;
-        }
-
-    };
-
+    // ----------------- DRAGGING STATE ----------------- //
 
     ControllerState dragging = new ControllerState() {
 
@@ -140,6 +152,52 @@ public class MiniViewController {
     };
 
 
+    // ----------------- CREATE/UNSELECT STATE ----------------- //
+
+    ControllerState create_or_unselect = new ControllerState() {
+
+        public void handleDragged(MouseEvent event) {
+            model.addBox(prevX/scale, prevY/scale, 1/scale, 1/scale);
+            iModel.setSelectedBox(model.whichBox(prevX/scale, prevY/scale));
+            currentState = creating;
+        }
+
+        public void handleReleased(MouseEvent event) {
+            iModel.setSelectedBox(null);
+            currentState = ready;
+        }
+
+    };
+
+
+    // ----------------- CREATING STATE ----------------- //
+
+    ControllerState creating = new ControllerState() {
+
+        public void handleDragged(MouseEvent event) {
+
+            double dw, dh;
+
+            dw = Math.abs(event.getX() - prevX);
+            dh = Math.abs(event.getY() - prevY);
+
+            iModel.getSelectedBox().setX(Math.min(event.getX()/scale, prevX/scale));
+            iModel.getSelectedBox().setY(Math.min(event.getY()/scale, prevY/scale));
+            iModel.getSelectedBox().setWidth(dw/scale);
+            iModel.getSelectedBox().setHeight(dh/scale);
+
+            model.notifySubscribers();
+
+        }
+
+        public void handleReleased(MouseEvent event) {
+            currentState = ready;
+        }
+
+    };
+
+
+    // ----------------- PANNING STATE ----------------- //
 
     ControllerState panning = new ControllerState() {
 
@@ -165,6 +223,9 @@ public class MiniViewController {
             currentState = ready;
         }
     };
+
+
+    // ----------------- RESIZING STATE ----------------- //
 
     ControllerState resizing = new ControllerState() {
 
