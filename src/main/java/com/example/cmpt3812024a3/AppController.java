@@ -10,6 +10,7 @@ public class AppController {
     private ControllerState currentState;
     private double prevX, prevY;
     private double worldX, worldY;
+//    private double dx, dy, dw, dh;
 
     /**
      * Constructor for the Controller class
@@ -25,17 +26,13 @@ public class AppController {
      * Set the model
      * @param m model
      */
-    public void setModel(EntityModel m) {
-        this.model = m;
-    }
+    public void setModel(EntityModel m) { this.model = m; }
 
     /**
      * Set the imodel
      * @param im imodel
      */
-    public void setIModel(InteractionModel im) {
-        this.iModel = im;
-    }
+    public void setIModel(InteractionModel im) { this.iModel = im; }
 
 
     // ----------------- HANDLERS ----------------- //
@@ -90,40 +87,53 @@ public class AppController {
     ControllerState ready = new ControllerState() {
 
         public void handlePressed(MouseEvent event) {
+
+            // View Coordinates
             prevX = event.getX();
             prevY = event.getY();
 
+            // World Coordinates
             worldX = event.getX() + iModel.getViewPortLeft();
             worldY = event.getY() + iModel.getViewPortTop();
 
+            // Pressed on a portal while CTRL is pressed
             if (event.isControlDown() && model.whichBox(worldX, worldY) instanceof Portal portal) {
+
+                // Calculate world coordinate through the Portal
                 double portalWorldX, portalWorldY;
                 portalWorldX = (worldX - portal.getX() - portal.getPortalLeft())/portal.getScaleFactor();
                 portalWorldY = (worldY - portal.getY() - portal.getPortalTop())/portal.getScaleFactor();
 
+                // Clicked on a box through a portal
                 if (model.contains(portalWorldX, portalWorldY)) {
                     iModel.setSelectedBox(model.whichBox(portalWorldX, portalWorldY));
                     currentState = dragging;
                 }
+                // Clicked on the background through a portal
                 else {
                     iModel.setSelectedBox(portal);
                     currentState = panning;
                 }
             }
+
+            // Clicked on the handle of a Box
             else if (iModel.getSelectedBox() != null && iModel.onHandle(worldX, worldY) != 0) {
                 currentState = resizing;
             }
+
+            // Clicked on a box in the world
             else if (model.contains(worldX, worldY)) {
                 iModel.setSelectedBox(model.whichBox(worldX, worldY));
                 currentState = dragging;
             }
-            else {
-                currentState = create_or_unselect;
-            }
+
+            // Clicked on the background
+            else { currentState = create_or_unselect; }
         }
 
         public void handleKeyPressed(KeyEvent event) {
 
+            // Different states and events based on the key pressed
             switch (event.getCode()) {
                 case DELETE:
                 case BACK_SPACE:
@@ -165,6 +175,7 @@ public class AppController {
         public void handleDragged(MouseEvent event) {
             double dx, dy;
 
+            // Calculate distance moved and add to the position of the box
             dx = event.getX() - prevX;
             dy = event.getY() - prevY;
 
@@ -177,9 +188,7 @@ public class AppController {
             model.notifySubscribers();
         }
 
-        public void handleReleased(MouseEvent event) {
-            currentState = ready;
-        }
+        public void handleReleased(MouseEvent event) { currentState = ready; }
 
     };
 
@@ -213,15 +222,20 @@ public class AppController {
 
         public void handleDragged(MouseEvent event) {
 
-            double dw, dh;
+            double newX, newY, dw, dh;
 
-            dw = Math.abs(event.getX() + iModel.getViewPortLeft() - worldX);
-            dh = Math.abs(event.getY() + iModel.getViewPortTop() - worldY);
+            newX = event.getX() + iModel.getViewPortLeft();
+            newY = event.getY() + iModel.getViewPortTop();
 
-            iModel.getSelectedBox().setX(Math.min(event.getX() + iModel.getViewPortLeft(), worldX));
-            iModel.getSelectedBox().setY(Math.min(event.getY() + iModel.getViewPortTop(), worldY));
+            // Calculate distance moved and add to width and height
+            dw = Math.abs(newX - worldX);
+            dh = Math.abs(newY - worldY);
             iModel.getSelectedBox().setWidth(dw);
             iModel.getSelectedBox().setHeight(dh);
+
+            // Set the Coordinates as the minimum of the new position and the original click
+            iModel.getSelectedBox().setX(Math.min(newX, worldX));
+            iModel.getSelectedBox().setY(Math.min(newY, worldY));
 
             iModel.notifySubscribers();
         }
@@ -246,17 +260,19 @@ public class AppController {
 
             double dx, dy;
 
+            // Calculate distance moved
             dx = prevX - event.getX();
             dy = prevY - event.getY();
-
             prevX = event.getX();
             prevY = event.getY();
 
             if (event.isControlDown() && iModel.getSelectedBox() instanceof Portal portal) {
 
+                // Portal panning, scale the distance to the portal
                 dx *= portal.getScaleFactor();
                 dy *= portal.getScaleFactor();
 
+                // Update portal properties
                 portal.setPortalLeft(portal.getPortalLeft() - dx);
                 portal.setPortalTop(portal.getPortalTop() - dy);
                 iModel.notifySubscribers();
@@ -264,10 +280,6 @@ public class AppController {
             else {
                 iModel.moveViewPort(dx, dy);
             }
-        }
-
-        public void handleReleased(MouseEvent event) {
-            currentState = ready;
         }
 
         public void handleKeyReleased(KeyEvent event) {
@@ -284,6 +296,7 @@ public class AppController {
 
             int handle = iModel.onHandle(worldX, worldY);
 
+            // Calculate distance moved
             double newX = event.getX() + iModel.getViewPortLeft();
             double newY = event.getY() + iModel.getViewPortTop();
             double dX = newX - worldX;
@@ -316,6 +329,7 @@ public class AppController {
                     break;
             }
 
+            // Update based on current event position
             worldX = newX;
             worldY = newY;
             model.notifySubscribers();

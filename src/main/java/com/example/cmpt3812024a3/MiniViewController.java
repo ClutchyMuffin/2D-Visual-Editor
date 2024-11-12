@@ -10,9 +10,13 @@ public class MiniViewController {
     private double prevX, prevY;
     private double scale;
 
+    /**
+     * Constructor for the MiniViewController class
+     */
     public MiniViewController() {
         currentState = ready;
     }
+
 
     // ----------------- SETTERS ----------------- //
 
@@ -73,33 +77,44 @@ public class MiniViewController {
     ControllerState ready = new ControllerState() {
 
         public void handlePressed(MouseEvent event) {
+
+            // World Coordinates (MiniView displays the whole world)
             prevX = event.getX();
             prevY = event.getY();
 
+            // Pressed on a portal while CTRL is pressed
             if (event.isControlDown() && model.whichBox(prevX/scale, prevY/scale) instanceof Portal portal) {
+
+                // Calculate world coordinate through the Portal
                 double portalWorldX, portalWorldY;
                 portalWorldX = (prevX/scale - portal.getX() - portal.getPortalLeft())/portal.getScaleFactor();
                 portalWorldY = (prevY/scale - portal.getY() - portal.getPortalTop())/portal.getScaleFactor();
 
+                // Clicked on a box through a portal
                 if (model.contains(portalWorldX, portalWorldY)) {
                     iModel.setSelectedBox(model.whichBox(portalWorldX, portalWorldY));
                     currentState = dragging;
                 }
+                // Clicked on the background through a portal
                 else {
                     iModel.setSelectedBox(portal);
                     currentState = panning;
                 }
             }
+
+            // Clicked on the handle of a Box
             else if (iModel.getSelectedBox() != null && iModel.onHandle(prevX/scale, prevY/scale) != 0) {
                 currentState = resizing;
             }
+
+            // Clicked on a box in the world
             else if (model.contains(prevX/scale, prevY/scale)) {
                 iModel.setSelectedBox(model.whichBox(prevX/scale, prevY/scale));
                 currentState = dragging;
             }
-            else {
-                currentState = create_or_unselect;
-            }
+
+            // Clicked on the background
+            else { currentState = create_or_unselect; }
         }
     };
 
@@ -109,27 +124,23 @@ public class MiniViewController {
     ControllerState dragging = new ControllerState() {
 
         public void handleDragged(MouseEvent event) {
-
             double dx, dy;
 
-            dx = event.getX() - prevX;
-            dy = event.getY() - prevY;
+            // Calculate distance moved and add to the position of the box
+            dx = (event.getX() - prevX)/scale;
+            dy = (event.getY() - prevY)/scale;
 
             prevX = event.getX();
             prevY = event.getY();
 
-            iModel.getSelectedBox().addX(dx/scale);
-            iModel.getSelectedBox().addY(dy/scale);
+            iModel.getSelectedBox().addX(dx);
+            iModel.getSelectedBox().addY(dy);
 
             model.notifySubscribers();
-
         }
 
-        public void handleReleased(MouseEvent event) {
+        public void handleReleased(MouseEvent event) { currentState = ready; }
 
-            currentState = ready;
-
-        }
     };
 
 
@@ -164,13 +175,16 @@ public class MiniViewController {
 
             double dw, dh;
 
-            dw = Math.abs(event.getX() - prevX);
-            dh = Math.abs(event.getY() - prevY);
+            // Calculate distance moved and add to width and height
+            dw = (Math.abs(event.getX() - prevX))/scale;
+            dh = (Math.abs(event.getY() - prevY))/scale;
+            iModel.getSelectedBox().setWidth(dw);
+            iModel.getSelectedBox().setHeight(dh);
 
+            // Set the Coordinates as the minimum of the new position and the original click
             iModel.getSelectedBox().setX(Math.min(event.getX()/scale, prevX/scale));
             iModel.getSelectedBox().setY(Math.min(event.getY()/scale, prevY/scale));
-            iModel.getSelectedBox().setWidth(dw/scale);
-            iModel.getSelectedBox().setHeight(dh/scale);
+
 
             model.notifySubscribers();
 
@@ -196,17 +210,19 @@ public class MiniViewController {
 
             double dx, dy;
 
+            // Calculate distance moved
             dx = prevX - event.getX();
             dy = prevY - event.getY();
-
             prevX = event.getX();
             prevY = event.getY();
 
             if (event.isControlDown() && iModel.getSelectedBox() instanceof Portal portal) {
 
-                dx /= portal.getScaleFactor();
-                dy /= portal.getScaleFactor();
+                // Portal panning, scale the distance to the portal
+                dx *= portal.getScaleFactor();
+                dy *= portal.getScaleFactor();
 
+                // Update portal properties
                 portal.setPortalLeft(portal.getPortalLeft() - dx);
                 portal.setPortalTop(portal.getPortalTop() - dy);
                 iModel.notifySubscribers();
@@ -225,13 +241,15 @@ public class MiniViewController {
 
         public void handleDragged(MouseEvent event) {
 
-            // Adjust for scale
+            int handle = iModel.onHandle(prevX / scale, prevY / scale);
+
+            // Calculate distance moved
             double newX = event.getX();
             double newY = event.getY();
             double dX = (newX - prevX) / scale;
             double dY = (newY - prevY) / scale;
 
-            int handle = iModel.onHandle(prevX / scale, prevY / scale);
+
             switch (handle) {
                 case 1:  // Top-left handle
                     iModel.getSelectedBox().setX(iModel.getSelectedBox().getX() + dX);
@@ -257,11 +275,11 @@ public class MiniViewController {
                     break;
             }
 
-            // Update prevX and prevY to the current event position
+            // Update based on current event position
             prevX = newX;
             prevY = newY;
+            model.notifySubscribers();
 
-            model.notifySubscribers(); // Update the view
         }
 
         public void handleReleased(MouseEvent event) {
