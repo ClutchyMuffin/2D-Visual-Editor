@@ -92,17 +92,16 @@ public class MiniViewController {
             prevY = event.getY();
 
             if (event.isControlDown() && model.whichBox(prevX/scale, prevY/scale) instanceof Portal portal) {
-                System.out.println("CLICKED");
                 double portalWorldX, portalWorldY;
-                portalWorldX = (prevX/scale - portal.getX())/portal.getScaleFactor();
-                portalWorldY = (prevY/scale - portal.getY())/portal.getScaleFactor();
-                System.out.println(portalWorldX + " " + portalWorldY);
+                portalWorldX = (prevX/scale - portal.getX() - portal.getPortalLeft())/portal.getScaleFactor();
+                portalWorldY = (prevY/scale - portal.getY() - portal.getPortalTop())/portal.getScaleFactor();
 
                 if (model.contains(portalWorldX, portalWorldY)) {
                     iModel.setSelectedBox(model.whichBox(portalWorldX, portalWorldY));
                     currentState = dragging;
                 }
                 else {
+                    iModel.setSelectedBox(portal);
                     currentState = panning;
                 }
             }
@@ -127,8 +126,6 @@ public class MiniViewController {
                         model.removeBox(iModel.getSelectedBox());
                     }
                     break;
-                case SHIFT:
-                    currentState = panning;
                 case UP:
                     if (iModel.getSelectedBox() != null && iModel.getSelectedBox() instanceof Portal portal) {
                         portal.setScaleFactor(portal.getScaleFactor() + 0.05);
@@ -140,12 +137,11 @@ public class MiniViewController {
                         portal.setScaleFactor(portal.getScaleFactor() - 0.05);
                         iModel.notifySubscribers();
                     }
+                    break;
                 default:
                     break;
             }
-
         }
-
     };
 
 
@@ -184,7 +180,7 @@ public class MiniViewController {
 
         public void handleDragged(MouseEvent event) {
             if (event.isControlDown()) {
-                model.addPortal(new Portal(prevX, prevY, 0,0));
+                model.addPortal(new Portal(prevX / scale, prevY / scale, 1,1));
             }
             else {
                 model.addBox(prevX / scale, prevY / scale, 1 / scale, 1 / scale);
@@ -247,10 +243,18 @@ public class MiniViewController {
             prevX = event.getX();
             prevY = event.getY();
 
-            iModel.moveViewPort(dx, dy);
+            if (event.isControlDown() && iModel.getSelectedBox() instanceof Portal portal) {
+
+                dx /= portal.getScaleFactor();
+                dy /= portal.getScaleFactor();
+
+                portal.setPortalLeft(portal.getPortalLeft() - dx);
+                portal.setPortalTop(portal.getPortalTop() - dy);
+                iModel.notifySubscribers();
+            }
         }
 
-        public void handleKeyReleased(KeyEvent event) {
+        public void handleReleased(MouseEvent event) {
             currentState = ready;
         }
     };

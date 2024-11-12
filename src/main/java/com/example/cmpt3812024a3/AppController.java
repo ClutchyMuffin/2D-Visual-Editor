@@ -100,11 +100,13 @@ public class AppController {
                 double portalWorldX, portalWorldY;
                 portalWorldX = (worldX - portal.getX() - portal.getPortalLeft())/portal.getScaleFactor();
                 portalWorldY = (worldY - portal.getY() - portal.getPortalTop())/portal.getScaleFactor();
+
                 if (model.contains(portalWorldX, portalWorldY)) {
                     iModel.setSelectedBox(model.whichBox(portalWorldX, portalWorldY));
                     currentState = dragging;
                 }
                 else {
+                    iModel.setSelectedBox(portal);
                     currentState = panning;
                 }
             }
@@ -147,6 +149,7 @@ public class AppController {
                         portal.setScaleFactor(portal.getScaleFactor() - 0.05);
                         iModel.notifySubscribers();
                     }
+                    break;
 
                 default:
                     break;
@@ -237,7 +240,6 @@ public class AppController {
         public void handlePressed(MouseEvent event) {
             prevX = event.getX();
             prevY = event.getY();
-            iModel.setSelectedBox(null);
         }
 
         public void handleDragged(MouseEvent event) {
