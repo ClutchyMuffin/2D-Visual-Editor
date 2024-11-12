@@ -11,16 +11,6 @@ public class Portal extends Box {
         this.portalTop = 0;
     }
 
-    // ----------------- ADDERS ----------------- //
-    public void addX(double dx) {
-        super.addX(dx);
-        this.portalLeft += dx;
-    }
-    public void addY(double dy) {
-        super.addY(dy);
-        this.portalTop += dy;
-    }
-
     // ----------------- GETTERS ----------------- //
     public double getScaleFactor() { return scaleFactor; }
     public double getPortalLeft() { return portalLeft; }

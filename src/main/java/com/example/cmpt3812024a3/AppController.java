@@ -98,9 +98,8 @@ public class AppController {
 
             if (event.isControlDown() && model.whichBox(worldX, worldY) instanceof Portal portal) {
                 double portalWorldX, portalWorldY;
-                portalWorldX = (worldX - portal.getX())/portal.getScaleFactor();
-                portalWorldY = (worldY - portal.getY())/portal.getScaleFactor();
-
+                portalWorldX = (worldX - portal.getX() - portal.getPortalLeft())/portal.getScaleFactor();
+                portalWorldY = (worldY - portal.getY() - portal.getPortalTop())/portal.getScaleFactor();
                 if (model.contains(portalWorldX, portalWorldY)) {
                     iModel.setSelectedBox(model.whichBox(portalWorldX, portalWorldY));
                     currentState = dragging;
@@ -238,6 +237,7 @@ public class AppController {
         public void handlePressed(MouseEvent event) {
             prevX = event.getX();
             prevY = event.getY();
+            iModel.setSelectedBox(null);
         }
 
         public void handleDragged(MouseEvent event) {
@@ -250,7 +250,18 @@ public class AppController {
             prevX = event.getX();
             prevY = event.getY();
 
-            iModel.moveViewPort(dx, dy);
+            if (event.isControlDown() && iModel.getSelectedBox() instanceof Portal portal) {
+
+                dx /= portal.getScaleFactor();
+                dy /= portal.getScaleFactor();
+
+                portal.setPortalLeft(portal.getPortalLeft() - dx);
+                portal.setPortalTop(portal.getPortalTop() - dy);
+                iModel.notifySubscribers();
+            }
+            else {
+                iModel.moveViewPort(dx, dy);
+            }
         }
 
         public void handleKeyReleased(KeyEvent event) {

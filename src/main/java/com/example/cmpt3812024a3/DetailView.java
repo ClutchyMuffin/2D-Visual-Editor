@@ -150,7 +150,7 @@ public class DetailView extends StackPane implements Subscriber {
         gc.clip();
 
         // Transform the GC to the portal's properties & draw elements
-        gc.translate(portal.getX(), portal.getY());
+        gc.translate(portal.getX() + portal.getPortalLeft(), portal.getY() + portal.getPortalTop());
         gc.scale(portal.getScaleFactor(), portal.getScaleFactor());
         model.getBoxes().forEach(innerElement -> {
             if (innerElement instanceof Portal innerPortal) {
