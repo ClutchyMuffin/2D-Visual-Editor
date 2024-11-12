@@ -91,7 +91,22 @@ public class MiniViewController {
             prevX = event.getX();
             prevY = event.getY();
 
-            if (iModel.getSelectedBox() != null && iModel.onHandle(prevX/scale, prevY/scale) != 0) {
+            if (event.isControlDown() && model.whichBox(prevX/scale, prevY/scale) instanceof Portal portal) {
+                System.out.println("CLICKED");
+                double portalWorldX, portalWorldY;
+                portalWorldX = (prevX/scale - portal.getX())/portal.getScaleFactor();
+                portalWorldY = (prevY/scale - portal.getY())/portal.getScaleFactor();
+                System.out.println(portalWorldX + " " + portalWorldY);
+
+                if (model.contains(portalWorldX, portalWorldY)) {
+                    iModel.setSelectedBox(model.whichBox(portalWorldX, portalWorldY));
+                    currentState = dragging;
+                }
+                else {
+                    currentState = panning;
+                }
+            }
+            else if (iModel.getSelectedBox() != null && iModel.onHandle(prevX/scale, prevY/scale) != 0) {
                 currentState = resizing;
             }
             else if (model.contains(prevX/scale, prevY/scale)) {
@@ -114,6 +129,17 @@ public class MiniViewController {
                     break;
                 case SHIFT:
                     currentState = panning;
+                case UP:
+                    if (iModel.getSelectedBox() != null && iModel.getSelectedBox() instanceof Portal portal) {
+                        portal.setScaleFactor(portal.getScaleFactor() + 0.05);
+                        iModel.notifySubscribers();
+                    }
+                    break;
+                case DOWN:
+                    if (iModel.getSelectedBox() != null && iModel.getSelectedBox() instanceof Portal portal) {
+                        portal.setScaleFactor(portal.getScaleFactor() - 0.05);
+                        iModel.notifySubscribers();
+                    }
                 default:
                     break;
             }
@@ -157,7 +183,12 @@ public class MiniViewController {
     ControllerState create_or_unselect = new ControllerState() {
 
         public void handleDragged(MouseEvent event) {
-            model.addBox(prevX/scale, prevY/scale, 1/scale, 1/scale);
+            if (event.isControlDown()) {
+                model.addPortal(new Portal(prevX, prevY, 0,0));
+            }
+            else {
+                model.addBox(prevX / scale, prevY / scale, 1 / scale, 1 / scale);
+            }
             iModel.setSelectedBox(model.whichBox(prevX/scale, prevY/scale));
             currentState = creating;
         }
