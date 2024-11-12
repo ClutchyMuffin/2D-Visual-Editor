@@ -102,6 +102,11 @@ public class MiniViewController {
                 }
             }
 
+            // MiniView Panning
+            else if (event.isShiftDown()) {
+                currentState = panning;
+            }
+
             // Clicked on the handle of a Box
             else if (iModel.getSelectedBox() != null && iModel.onHandle(prevX/scale, prevY/scale) != 0) {
                 currentState = resizing;
@@ -221,6 +226,9 @@ public class MiniViewController {
                 portal.setPortalLeft(portal.getPortalLeft() - dx);
                 portal.setPortalTop(portal.getPortalTop() - dy);
                 iModel.notifySubscribers();
+            }
+            else {
+                iModel.moveViewPort(dx, dy);
             }
         }
 

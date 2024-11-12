@@ -276,6 +276,15 @@ public class AppController {
             }
         }
 
+        public void handleReleased(MouseEvent event) {
+            if (event.isControlDown()) {
+                currentState = ready;
+            }
+            else {
+                currentState = panning;
+            }
+        }
+
         public void handleKeyReleased(KeyEvent event) {
             currentState = ready;
         }
