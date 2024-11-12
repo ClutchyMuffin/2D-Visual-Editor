@@ -56,18 +56,6 @@ public class MiniViewController {
      */
     public void handleDragged(MouseEvent event) { currentState.handleDragged(event); }
 
-    /**
-     * Handle the Key Pressed event
-     * @param event key event
-     */
-    public void handleKeyPressed(KeyEvent event) { currentState.handleKeyPressed(event); }
-
-    /**
-     * Handle the Key Released event
-     * @param event key event
-     */
-    public void handleKeyReleased(KeyEvent event) { currentState.handleKeyReleased(event); }
-
 
     // ----------------- STATES ----------------- //
 
@@ -78,8 +66,6 @@ public class MiniViewController {
         void handlePressed(MouseEvent event) {}
         void handleDragged(MouseEvent event) {}
         void handleReleased(MouseEvent event) {}
-        void handleKeyPressed(KeyEvent event) {}
-        void handleKeyReleased(KeyEvent event) {}
     }
 
 

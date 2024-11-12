@@ -44,8 +44,6 @@ public class MiniView extends DetailView {
             controller.setScale(scale);
             controller.handleDragged(e);
         });
-        setOnKeyPressed(controller::handleKeyPressed);
-        setOnKeyReleased(controller::handleKeyReleased);
     }
 
 
