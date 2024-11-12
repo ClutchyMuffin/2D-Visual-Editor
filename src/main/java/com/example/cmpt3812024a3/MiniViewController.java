@@ -1,6 +1,5 @@
 package com.example.cmpt3812024a3;
 
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 
 public class MiniViewController {
@@ -100,32 +99,6 @@ public class MiniViewController {
             }
             else {
                 currentState = create_or_unselect;
-            }
-        }
-
-        public void handleKeyPressed(KeyEvent event) {
-
-            switch (event.getCode()) {
-                case BACK_SPACE:
-                case DELETE:
-                    if (iModel.getSelectedBox() != null) {
-                        model.removeBox(iModel.getSelectedBox());
-                    }
-                    break;
-                case UP:
-                    if (iModel.getSelectedBox() != null && iModel.getSelectedBox() instanceof Portal portal) {
-                        portal.setScaleFactor(portal.getScaleFactor() + 0.05);
-                        iModel.notifySubscribers();
-                    }
-                    break;
-                case DOWN:
-                    if (iModel.getSelectedBox() != null && iModel.getSelectedBox() instanceof Portal portal) {
-                        portal.setScaleFactor(portal.getScaleFactor() - 0.05);
-                        iModel.notifySubscribers();
-                    }
-                    break;
-                default:
-                    break;
             }
         }
     };
