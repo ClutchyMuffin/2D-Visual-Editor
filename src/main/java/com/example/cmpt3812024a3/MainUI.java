@@ -36,7 +36,11 @@ public class MainUI extends StackPane {
         miniView.setIModel(iModel);
         miniView.setupEvents(mController);
 
-        Platform.runLater(detailView::requestFocus);
+        Platform.runLater(() -> {
+            detailView.requestFocus();
+            iModel.setViewPortWidth(detailView.getViewWidth());
+            iModel.setViewPortHeight(detailView.getViewHeight());
+        });
         this.getChildren().addAll(detailView, miniView);
 
     }
