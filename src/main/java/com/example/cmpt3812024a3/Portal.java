@@ -31,13 +31,4 @@ public class Portal extends Box {
     public void setPortalLeft(double portalLeft) { this.portalLeft = portalLeft; }
     public void setPortalTop(double portalTop) { this.portalTop = portalTop; }
 
-    public void setX(double nx) {
-        super.setX(nx);
-        this.portalLeft = nx;
-    }
-    public void setY(double ny) {
-        super.setY(ny);
-        this.portalTop = ny;
-    }
-
 }

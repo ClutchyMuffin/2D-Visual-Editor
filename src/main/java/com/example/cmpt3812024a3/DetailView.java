@@ -92,7 +92,7 @@ public class DetailView extends StackPane implements Subscriber {
     public void draw() {
         // Clear the canvas
         gc.clearRect(0, 0, myCanvas.getWidth(), myCanvas.getHeight());
-
+        gc.strokeRect(0,0, iModel.getWorldSize(), iModel.getWorldSize());
         // Save current context and translate according to viewPort position
         gc.save();
         gc.translate(-iModel.getViewPortLeft(), -iModel.getViewPortTop());
@@ -150,7 +150,7 @@ public class DetailView extends StackPane implements Subscriber {
         gc.clip();
 
         // Transform the GC to the portal's properties & draw elements
-        gc.translate(portal.getPortalLeft(), portal.getPortalTop());
+        gc.translate(portal.getX(), portal.getY());
         gc.scale(portal.getScaleFactor(), portal.getScaleFactor());
         model.getBoxes().forEach(innerElement -> {
             if (innerElement instanceof Portal innerPortal) {

@@ -96,12 +96,19 @@ public class AppController {
             worldX = event.getX() + iModel.getViewPortLeft();
             worldY = event.getY() + iModel.getViewPortTop();
 
-            if (event.isControlDown()) {
-                System.out.println("Creating Portal");
-                Portal portal = new Portal(worldX, worldY, 1, 1);
-                model.addPortal(portal);
-                iModel.setSelectedBox(portal);
-                currentState = creating;
+            if (event.isControlDown() && model.whichBox(worldX, worldY) instanceof Portal portal) {
+                double portalWorldX, portalWorldY;
+                portalWorldX = (worldX - portal.getX())/portal.getScaleFactor();
+                portalWorldY = (worldY - portal.getY())/portal.getScaleFactor();
+                System.out.println("Portal WORLD: " + portalWorldX + " " + portalWorldY);
+
+                if (model.contains(portalWorldX, portalWorldY)) {
+                    iModel.setSelectedBox(model.whichBox(portalWorldX, portalWorldY));
+                    currentState = dragging;
+                }
+                else {
+                    currentState = panning;
+                }
             }
             else if (iModel.getSelectedBox() != null && iModel.onHandle(worldX, worldY) != 0) {
                 currentState = resizing;
@@ -168,7 +175,14 @@ public class AppController {
     ControllerState create_or_unselect = new ControllerState() {
 
         public void handleDragged(MouseEvent event) {
-            model.addBox(worldX, worldY, 0 ,0);
+            if (event.isControlDown()) {
+                model.addPortal(new Portal(worldX, worldY, 0,0));
+                System.out.println("Portal Created");
+            }
+            else {
+                System.out.println("VIEW: " + worldX + " " + worldY);
+                model.addBox(worldX, worldY, 0 ,0);
+            }
             iModel.setSelectedBox(model.whichBox(worldX, worldY));
             currentState = creating;
         }
