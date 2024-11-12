@@ -254,8 +254,8 @@ public class AppController {
 
             if (event.isControlDown() && iModel.getSelectedBox() instanceof Portal portal) {
 
-                dx /= portal.getScaleFactor();
-                dy /= portal.getScaleFactor();
+                dx *= portal.getScaleFactor();
+                dy *= portal.getScaleFactor();
 
                 portal.setPortalLeft(portal.getPortalLeft() - dx);
                 portal.setPortalTop(portal.getPortalTop() - dy);
@@ -264,6 +264,10 @@ public class AppController {
             else {
                 iModel.moveViewPort(dx, dy);
             }
+        }
+
+        public void handleReleased(MouseEvent event) {
+            currentState = ready;
         }
 
         public void handleKeyReleased(KeyEvent event) {
