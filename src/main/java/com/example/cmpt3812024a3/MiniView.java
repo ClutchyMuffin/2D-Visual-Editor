@@ -75,7 +75,7 @@ public class MiniView extends DetailView {
         // Go through entity list and draw all
         model.getBoxes().forEach(box -> {
             if (box instanceof Portal portal) {
-                drawPortal(gc, portal); }
+                drawPortal(gc, portal, 0); }
             else {
                 drawElement(gc, box);
             }

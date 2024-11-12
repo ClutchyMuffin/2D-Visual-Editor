@@ -100,7 +100,7 @@ public class DetailView extends StackPane implements Subscriber {
         // Go through entity list and draw all
         model.getBoxes().forEach(box -> {
             if (box instanceof Portal portal) {
-                drawPortal(gc, portal); }
+                drawPortal(gc, portal, 0); }
             else {
                 drawElement(gc, box);
             }
@@ -130,7 +130,9 @@ public class DetailView extends StackPane implements Subscriber {
      * Private method to draw the given portal
      * @param portal portal to draw
      */
-    protected void drawPortal(GraphicsContext gc, Portal portal) {
+    protected void drawPortal(GraphicsContext gc, Portal portal, int depth) {
+        int MAX_DEPTH = 2;
+        if (depth > MAX_DEPTH) return;
 
         // Save current context & reset the path
         gc.save();
@@ -151,7 +153,9 @@ public class DetailView extends StackPane implements Subscriber {
         gc.translate(portal.getPortalLeft(), portal.getPortalTop());
         gc.scale(portal.getScaleFactor(), portal.getScaleFactor());
         model.getBoxes().forEach(innerElement -> {
-            if (!(innerElement instanceof Portal)) {
+            if (innerElement instanceof Portal innerPortal) {
+                drawPortal(gc, innerPortal, depth + 1);  // Recursive call with incremented depth
+            } else if (depth < 2) {
                 drawElement(gc, innerElement);
             }
         });
