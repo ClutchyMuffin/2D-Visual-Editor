@@ -90,28 +90,17 @@ public class DetailView extends StackPane implements Subscriber {
      * Draw the boxes in the model on the canvas
      */
     public void draw() {
+        // Clear the canvas
         gc.clearRect(0, 0, myCanvas.getWidth(), myCanvas.getHeight());
 
+        // Save current context and translate according to viewPort position
         gc.save();
         gc.translate(-iModel.getViewPortLeft(), -iModel.getViewPortTop());
+
         // Go through entity list and draw all
         model.getBoxes().forEach(box -> {
-            if (box instanceof Portal) {
-                Portal portal = (Portal) box;
-                gc.save();
-                gc.beginPath();
-                gc.strokeRect(portal.getX(), portal.getY(), portal.getWidth(), portal.getHeight());
-                gc.rect(portal.getX(), portal.getY(), portal.getWidth(), portal.getHeight());
-                gc.clip();
-                gc.translate(portal.getPortalLeft(), portal.getPortalTop());
-                gc.scale(portal.getScaleFactor(), portal.getScaleFactor());
-                model.getBoxes().forEach(innerElement -> {
-                    if (!(innerElement instanceof Portal)) {
-                        drawElement(innerElement);
-                    }
-                });
-                gc.restore();
-            }
+            if (box instanceof Portal portal) {
+                drawPortal(portal); }
             else {
                 drawElement(box);
             }
@@ -119,13 +108,14 @@ public class DetailView extends StackPane implements Subscriber {
         gc.restore();
     }
 
+    /**
+     * Private method to draw the given box
+     * @param box entity to draw
+     */
     private void drawElement(Box box) {
-        if (iModel.getSelectedBox() == box) {
-            gc.setFill(Color.ORANGE);
-        }
-        else {
-            gc.setFill(Color.BLUE);
-        }
+
+        // Choose fill color
+        gc.setFill(iModel.getSelectedBox() == box ? Color.ORANGE : Color.BLUE);
 
         // Draw boxes
         gc.setLineWidth(2);
@@ -133,27 +123,64 @@ public class DetailView extends StackPane implements Subscriber {
         gc.strokeRect(box.getX(), box.getY(), box.getWidth(), box.getHeight());
 
         // Draw handles on the selected box
-        if (iModel.getSelectedBox() == box) {
-            gc.setFill(Color.WHITE);
-            double radius = iModel.getHandleRadius();
+        if (iModel.getSelectedBox() == box) { drawHandles(box); }
+    }
 
-            // Top Left
-            gc.strokeOval(box.getX() - radius, box.getY() - radius, 2 * radius, 2 * radius);
-            gc.fillOval(box.getX() - radius, box.getY() - radius, 2 * radius, 2 * radius);
+    /**
+     * Private method to draw the given portal
+     * @param portal portal to draw
+     */
+    private void drawPortal(Portal portal) {
 
-            // Top Right
-            gc.strokeOval(box.getX() + box.getWidth() - radius, box.getY() - radius, 2 * radius, 2 * radius);
-            gc.fillOval(box.getX() + box.getWidth() - radius, box.getY() - radius, 2 * radius, 2 * radius);
+        // Save current context & reset the path
+        gc.save();
+        gc.beginPath();
 
-            // Bottom Left
-            gc.strokeOval(box.getX() - radius, box.getY() + box.getHeight() - radius, 2 * radius, 2 * radius);
-            gc.fillOval(box.getX() - radius, box.getY() + box.getHeight() - radius, 2 * radius, 2 * radius);
+        // Draw the Portal Window
+        gc.setLineWidth(2);
+        gc.setFill(Color.LIGHTGRAY);
+        gc.fillRect(portal.getX(), portal.getY(), portal.getWidth(), portal.getHeight());
+        gc.strokeRect(portal.getX(), portal.getY(), portal.getWidth(), portal.getHeight());
+        if (iModel.getSelectedBox() == portal ) { drawHandles(portal); }
 
-            // Bottom Right
-            gc.strokeOval(box.getX() + box.getWidth() - radius, box.getY() + box.getHeight() - radius, 2 * radius, 2 * radius);
-            gc.fillOval(box.getX() + box.getWidth() - radius, box.getY() + box.getHeight() - radius, 2 * radius, 2 * radius);
+        // Define Clipping region & clip it
+        gc.rect(portal.getX(), portal.getY(), portal.getWidth(), portal.getHeight());
+        gc.clip();
 
-        }
+        // Transform the GC to the portal's properties & draw elements
+        gc.translate(portal.getPortalLeft(), portal.getPortalTop());
+        gc.scale(portal.getScaleFactor(), portal.getScaleFactor());
+        model.getBoxes().forEach(innerElement -> {
+            if (!(innerElement instanceof Portal)) {
+                drawElement(innerElement);
+            }
+        });
+        gc.restore();
+    }
+
+    /**
+     * Private method to draw handles around the given box
+     * @param box entity to draw handles around
+     */
+    private void drawHandles(Box box) {
+        gc.setFill(Color.WHITE);
+        double radius = iModel.getHandleRadius();
+
+        // Top Left
+        gc.strokeOval(box.getX() - radius, box.getY() - radius, 2 * radius, 2 * radius);
+        gc.fillOval(box.getX() - radius, box.getY() - radius, 2 * radius, 2 * radius);
+
+        // Top Right
+        gc.strokeOval(box.getX() + box.getWidth() - radius, box.getY() - radius, 2 * radius, 2 * radius);
+        gc.fillOval(box.getX() + box.getWidth() - radius, box.getY() - radius, 2 * radius, 2 * radius);
+
+        // Bottom Left
+        gc.strokeOval(box.getX() - radius, box.getY() + box.getHeight() - radius, 2 * radius, 2 * radius);
+        gc.fillOval(box.getX() - radius, box.getY() + box.getHeight() - radius, 2 * radius, 2 * radius);
+
+        // Bottom Right
+        gc.strokeOval(box.getX() + box.getWidth() - radius, box.getY() + box.getHeight() - radius, 2 * radius, 2 * radius);
+        gc.fillOval(box.getX() + box.getWidth() - radius, box.getY() + box.getHeight() - radius, 2 * radius, 2 * radius);
     }
 
     @Override
