@@ -100,9 +100,9 @@ public class DetailView extends StackPane implements Subscriber {
         // Go through entity list and draw all
         model.getBoxes().forEach(box -> {
             if (box instanceof Portal portal) {
-                drawPortal(portal); }
+                drawPortal(gc, portal); }
             else {
-                drawElement(box);
+                drawElement(gc, box);
             }
         });
         gc.restore();
@@ -112,7 +112,7 @@ public class DetailView extends StackPane implements Subscriber {
      * Private method to draw the given box
      * @param box entity to draw
      */
-    private void drawElement(Box box) {
+    protected void drawElement(GraphicsContext gc, Box box) {
 
         // Choose fill color
         gc.setFill(iModel.getSelectedBox() == box ? Color.ORANGE : Color.BLUE);
@@ -123,14 +123,14 @@ public class DetailView extends StackPane implements Subscriber {
         gc.strokeRect(box.getX(), box.getY(), box.getWidth(), box.getHeight());
 
         // Draw handles on the selected box
-        if (iModel.getSelectedBox() == box) { drawHandles(box); }
+        if (iModel.getSelectedBox() == box) { drawHandles(gc, box); }
     }
 
     /**
      * Private method to draw the given portal
      * @param portal portal to draw
      */
-    private void drawPortal(Portal portal) {
+    protected void drawPortal(GraphicsContext gc, Portal portal) {
 
         // Save current context & reset the path
         gc.save();
@@ -141,7 +141,7 @@ public class DetailView extends StackPane implements Subscriber {
         gc.setFill(Color.LIGHTGRAY);
         gc.fillRect(portal.getX(), portal.getY(), portal.getWidth(), portal.getHeight());
         gc.strokeRect(portal.getX(), portal.getY(), portal.getWidth(), portal.getHeight());
-        if (iModel.getSelectedBox() == portal ) { drawHandles(portal); }
+        if (iModel.getSelectedBox() == portal ) { drawHandles(gc, portal); }
 
         // Define Clipping region & clip it
         gc.rect(portal.getX(), portal.getY(), portal.getWidth(), portal.getHeight());
@@ -152,7 +152,7 @@ public class DetailView extends StackPane implements Subscriber {
         gc.scale(portal.getScaleFactor(), portal.getScaleFactor());
         model.getBoxes().forEach(innerElement -> {
             if (!(innerElement instanceof Portal)) {
-                drawElement(innerElement);
+                drawElement(gc, innerElement);
             }
         });
         gc.restore();
@@ -162,7 +162,7 @@ public class DetailView extends StackPane implements Subscriber {
      * Private method to draw handles around the given box
      * @param box entity to draw handles around
      */
-    private void drawHandles(Box box) {
+    protected void drawHandles(GraphicsContext gc, Box box) {
         gc.setFill(Color.WHITE);
         double radius = iModel.getHandleRadius();
 
