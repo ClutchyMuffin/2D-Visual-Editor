@@ -124,11 +124,10 @@ public class MiniViewController {
     ControllerState dragging = new ControllerState() {
 
         public void handleDragged(MouseEvent event) {
-            double dx, dy;
 
             // Calculate distance moved and add to the position of the box
-            dx = (event.getX() - prevX)/scale;
-            dy = (event.getY() - prevY)/scale;
+            double dx = (event.getX() - prevX)/scale;
+            double dy = (event.getY() - prevY)/scale;
 
             prevX = event.getX();
             prevY = event.getY();
@@ -173,11 +172,9 @@ public class MiniViewController {
 
         public void handleDragged(MouseEvent event) {
 
-            double dw, dh;
-
             // Calculate distance moved and add to width and height
-            dw = (Math.abs(event.getX() - prevX))/scale;
-            dh = (Math.abs(event.getY() - prevY))/scale;
+            double dw = (Math.abs(event.getX() - prevX))/scale;
+            double dh = (Math.abs(event.getY() - prevY))/scale;
             iModel.getSelectedBox().setWidth(dw);
             iModel.getSelectedBox().setHeight(dh);
 
@@ -208,11 +205,9 @@ public class MiniViewController {
 
         public void handleDragged(MouseEvent event) {
 
-            double dx, dy;
-
             // Calculate distance moved
-            dx = prevX - event.getX();
-            dy = prevY - event.getY();
+            double dx = prevX - event.getX();
+            double dy = prevY - event.getY();
             prevX = event.getX();
             prevY = event.getY();
 
@@ -248,7 +243,6 @@ public class MiniViewController {
             double newY = event.getY();
             double dX = (newX - prevX) / scale;
             double dY = (newY - prevY) / scale;
-
 
             switch (handle) {
                 case 1:  // Top-left handle

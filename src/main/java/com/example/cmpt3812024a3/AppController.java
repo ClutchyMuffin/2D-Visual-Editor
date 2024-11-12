@@ -10,7 +10,6 @@ public class AppController {
     private ControllerState currentState;
     private double prevX, prevY;
     private double worldX, worldY;
-//    private double dx, dy, dw, dh;
 
     /**
      * Constructor for the Controller class
@@ -173,11 +172,10 @@ public class AppController {
     ControllerState dragging = new ControllerState() {
 
         public void handleDragged(MouseEvent event) {
-            double dx, dy;
 
             // Calculate distance moved and add to the position of the box
-            dx = event.getX() - prevX;
-            dy = event.getY() - prevY;
+            double dx = event.getX() - prevX;
+            double dy = event.getY() - prevY;
 
             prevX = event.getX();
             prevY = event.getY();
@@ -222,14 +220,12 @@ public class AppController {
 
         public void handleDragged(MouseEvent event) {
 
-            double newX, newY, dw, dh;
-
-            newX = event.getX() + iModel.getViewPortLeft();
-            newY = event.getY() + iModel.getViewPortTop();
+            double newX = event.getX() + iModel.getViewPortLeft();
+            double newY = event.getY() + iModel.getViewPortTop();
 
             // Calculate distance moved and add to width and height
-            dw = Math.abs(newX - worldX);
-            dh = Math.abs(newY - worldY);
+            double dw = Math.abs(newX - worldX);
+            double dh = Math.abs(newY - worldY);
             iModel.getSelectedBox().setWidth(dw);
             iModel.getSelectedBox().setHeight(dh);
 
@@ -258,11 +254,9 @@ public class AppController {
 
         public void handleDragged(MouseEvent event) {
 
-            double dx, dy;
-
             // Calculate distance moved
-            dx = prevX - event.getX();
-            dy = prevY - event.getY();
+            double dx = prevX - event.getX();
+            double dy = prevY - event.getY();
             prevX = event.getX();
             prevY = event.getY();
 
@@ -299,31 +293,31 @@ public class AppController {
             // Calculate distance moved
             double newX = event.getX() + iModel.getViewPortLeft();
             double newY = event.getY() + iModel.getViewPortTop();
-            double dX = newX - worldX;
-            double dY = newY - worldY;
+            double dx = newX - worldX;
+            double dy = newY - worldY;
 
             switch (handle) {
                 case 1:  // Top-left handle
-                    iModel.getSelectedBox().setX(iModel.getSelectedBox().getX() + dX);
-                    iModel.getSelectedBox().setY(iModel.getSelectedBox().getY() + dY);
-                    iModel.getSelectedBox().setWidth(iModel.getSelectedBox().getWidth() - dX);
-                    iModel.getSelectedBox().setHeight(iModel.getSelectedBox().getHeight() - dY);
+                    iModel.getSelectedBox().setX(iModel.getSelectedBox().getX() + dx);
+                    iModel.getSelectedBox().setY(iModel.getSelectedBox().getY() + dy);
+                    iModel.getSelectedBox().setWidth(iModel.getSelectedBox().getWidth() - dx);
+                    iModel.getSelectedBox().setHeight(iModel.getSelectedBox().getHeight() - dy);
                     break;
                 case 2:  // Top-right handle
                     iModel.getSelectedBox().setX(iModel.getSelectedBox().getX());
-                    iModel.getSelectedBox().setY(iModel.getSelectedBox().getY() + dY);
-                    iModel.getSelectedBox().setWidth(iModel.getSelectedBox().getWidth() + dX);
-                    iModel.getSelectedBox().setHeight(iModel.getSelectedBox().getHeight() - dY);
+                    iModel.getSelectedBox().setY(iModel.getSelectedBox().getY() + dy);
+                    iModel.getSelectedBox().setWidth(iModel.getSelectedBox().getWidth() + dx);
+                    iModel.getSelectedBox().setHeight(iModel.getSelectedBox().getHeight() - dy);
                     break;
                 case 3:  // Bottom-left handle
-                    iModel.getSelectedBox().setX(iModel.getSelectedBox().getX() + dX);
+                    iModel.getSelectedBox().setX(iModel.getSelectedBox().getX() + dx);
                     iModel.getSelectedBox().setY(iModel.getSelectedBox().getY());
-                    iModel.getSelectedBox().setWidth(iModel.getSelectedBox().getWidth() - dX);
-                    iModel.getSelectedBox().setHeight(iModel.getSelectedBox().getHeight() + dY);
+                    iModel.getSelectedBox().setWidth(iModel.getSelectedBox().getWidth() - dx);
+                    iModel.getSelectedBox().setHeight(iModel.getSelectedBox().getHeight() + dy);
                     break;
                 case 4:  // Bottom-right handle
-                    iModel.getSelectedBox().setWidth(iModel.getSelectedBox().getWidth() + dX);
-                    iModel.getSelectedBox().setHeight(iModel.getSelectedBox().getHeight() + dY);
+                    iModel.getSelectedBox().setWidth(iModel.getSelectedBox().getWidth() + dx);
+                    iModel.getSelectedBox().setHeight(iModel.getSelectedBox().getHeight() + dy);
                     break;
                 default:
                     break;
