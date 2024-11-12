@@ -100,7 +100,6 @@ public class AppController {
                 double portalWorldX, portalWorldY;
                 portalWorldX = (worldX - portal.getX())/portal.getScaleFactor();
                 portalWorldY = (worldY - portal.getY())/portal.getScaleFactor();
-                System.out.println("Portal WORLD: " + portalWorldX + " " + portalWorldY);
 
                 if (model.contains(portalWorldX, portalWorldY)) {
                     iModel.setSelectedBox(model.whichBox(portalWorldX, portalWorldY));
@@ -136,6 +135,19 @@ public class AppController {
                 case SHIFT:
                     currentState = panning;
                     break;
+
+                case UP:
+                    if (iModel.getSelectedBox() != null && iModel.getSelectedBox() instanceof Portal portal) {
+                        portal.setScaleFactor(portal.getScaleFactor() + 0.05);
+                        iModel.notifySubscribers();
+                    }
+                    break;
+
+                case DOWN:
+                    if (iModel.getSelectedBox() != null && iModel.getSelectedBox() instanceof Portal portal) {
+                        portal.setScaleFactor(portal.getScaleFactor() - 0.05);
+                        iModel.notifySubscribers();
+                    }
 
                 default:
                     break;
@@ -177,10 +189,8 @@ public class AppController {
         public void handleDragged(MouseEvent event) {
             if (event.isControlDown()) {
                 model.addPortal(new Portal(worldX, worldY, 0,0));
-                System.out.println("Portal Created");
             }
             else {
-                System.out.println("VIEW: " + worldX + " " + worldY);
                 model.addBox(worldX, worldY, 0 ,0);
             }
             iModel.setSelectedBox(model.whichBox(worldX, worldY));
