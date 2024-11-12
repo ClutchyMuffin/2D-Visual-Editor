@@ -7,8 +7,8 @@ import javafx.scene.paint.Color;
 
 public class DetailView extends StackPane implements Subscriber {
 
-    private Canvas myCanvas;
-    private GraphicsContext gc;
+    private final Canvas myCanvas;
+    private final GraphicsContext gc;
     private double viewWidth, viewHeight;
     protected EntityModel model;
     protected InteractionModel iModel;
@@ -27,14 +27,14 @@ public class DetailView extends StackPane implements Subscriber {
         this.getChildren().add(myCanvas);
 
         // Fix the resizing
-        this.widthProperty().addListener((observable, oldValue, newValue) -> {
+        this.widthProperty().addListener((_, _, newValue) -> {
             this.viewWidth = newValue.doubleValue();
             myCanvas.setWidth(this.viewWidth);
             iModel.setViewPortWidth(this.viewWidth);
             draw();
         });
 
-        this.heightProperty().addListener((observable, oldValue, newValue) -> {
+        this.heightProperty().addListener((_, _, newValue) -> {
             this.viewHeight = newValue.doubleValue();
             myCanvas.setHeight(this.viewHeight);
             iModel.setViewPortHeight(this.viewHeight);
