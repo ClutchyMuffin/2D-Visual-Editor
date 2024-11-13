@@ -305,29 +305,37 @@ public class AppController {
             double dx = newX - worldX;
             double dy = newY - worldY;
 
+            Box box = iModel.getSelectedBox();
+
             switch (handle) {
                 case 1:  // Top-left handle
-                    iModel.getSelectedBox().setX(iModel.getSelectedBox().getX() + dx);
-                    iModel.getSelectedBox().setY(iModel.getSelectedBox().getY() + dy);
-                    iModel.getSelectedBox().setWidth(iModel.getSelectedBox().getWidth() - dx);
-                    iModel.getSelectedBox().setHeight(iModel.getSelectedBox().getHeight() - dy);
+                    box.addX(dx);
+                    box.addY(dy);
+                    box.addWidth(-dx);
+                    box.addHeight(-dy);
+                    manageAcrossHandle(box);
                     break;
+
                 case 2:  // Top-right handle
-                    iModel.getSelectedBox().setX(iModel.getSelectedBox().getX());
-                    iModel.getSelectedBox().setY(iModel.getSelectedBox().getY() + dy);
-                    iModel.getSelectedBox().setWidth(iModel.getSelectedBox().getWidth() + dx);
-                    iModel.getSelectedBox().setHeight(iModel.getSelectedBox().getHeight() - dy);
+                    box.addY(dy);
+                    box.addWidth(dx);
+                    box.addHeight(-dy);
+                    manageAcrossHandle(box);
                     break;
+
                 case 3:  // Bottom-left handle
-                    iModel.getSelectedBox().setX(iModel.getSelectedBox().getX() + dx);
-                    iModel.getSelectedBox().setY(iModel.getSelectedBox().getY());
-                    iModel.getSelectedBox().setWidth(iModel.getSelectedBox().getWidth() - dx);
-                    iModel.getSelectedBox().setHeight(iModel.getSelectedBox().getHeight() + dy);
+                    box.addX(dx);
+                    box.addWidth(-dx);
+                    box.addHeight(dy);
+                    manageAcrossHandle(box);
                     break;
+
                 case 4:  // Bottom-right handle
-                    iModel.getSelectedBox().setWidth(iModel.getSelectedBox().getWidth() + dx);
-                    iModel.getSelectedBox().setHeight(iModel.getSelectedBox().getHeight() + dy);
+                    box.addWidth(dx);
+                    box.addHeight(dy);
+                    manageAcrossHandle(box);
                     break;
+
                 default:
                     break;
             }
@@ -343,4 +351,15 @@ public class AppController {
             currentState = ready;
         }
     };
+
+    private static void manageAcrossHandle(Box box) {
+        if (box.getWidth() < 0) {
+            box.addX(box.getWidth());
+            box.setWidth(-box.getWidth());
+        }
+        if (box.getHeight() < 0) {
+            box.addY(box.getHeight());
+            box.setHeight(-box.getHeight());
+        }
+    }
 }

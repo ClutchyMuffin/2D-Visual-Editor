@@ -10,7 +10,7 @@ public class MiniView extends DetailView {
 
     private final Canvas miniCanvas;
     private final GraphicsContext gc;
-    private final double side=200;
+    private final double side=300;
     private double scale;
 
     public MiniView() {

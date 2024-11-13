@@ -249,34 +249,43 @@ public class MiniViewController {
             // Calculate distance moved
             double newX = event.getX();
             double newY = event.getY();
-            double dX = (newX - prevX) / scale;
-            double dY = (newY - prevY) / scale;
+            double dx = (newX - prevX) / scale;
+            double dy = (newY - prevY) / scale;
+
+            Box box = iModel.getSelectedBox();
 
             switch (handle) {
                 case 1:  // Top-left handle
-                    iModel.getSelectedBox().setX(iModel.getSelectedBox().getX() + dX);
-                    iModel.getSelectedBox().setY(iModel.getSelectedBox().getY() + dY);
-                    iModel.getSelectedBox().setWidth(iModel.getSelectedBox().getWidth() - dX);
-                    iModel.getSelectedBox().setHeight(iModel.getSelectedBox().getHeight() - dY);
+                    box.addX(dx);
+                    box.addY(dy);
+                    box.addWidth(-dx);
+                    box.addHeight(-dy);
+                    manageAcrossHandle(box);
                     break;
+
                 case 2:  // Top-right handle
-                    iModel.getSelectedBox().setY(iModel.getSelectedBox().getY() + dY);
-                    iModel.getSelectedBox().setWidth(iModel.getSelectedBox().getWidth() + dX);
-                    iModel.getSelectedBox().setHeight(iModel.getSelectedBox().getHeight() - dY);
+                    box.addY(dy);
+                    box.addWidth(dx);
+                    box.addHeight(-dy);
+                    manageAcrossHandle(box);
                     break;
+
                 case 3:  // Bottom-left handle
-                    iModel.getSelectedBox().setX(iModel.getSelectedBox().getX() + dX);
-                    iModel.getSelectedBox().setWidth(iModel.getSelectedBox().getWidth() - dX);
-                    iModel.getSelectedBox().setHeight(iModel.getSelectedBox().getHeight() + dY);
+                    box.addX(dx);
+                    box.addWidth(-dx);
+                    box.addHeight(dy);
+                    manageAcrossHandle(box);
                     break;
+
                 case 4:  // Bottom-right handle
-                    iModel.getSelectedBox().setWidth(iModel.getSelectedBox().getWidth() + dX);
-                    iModel.getSelectedBox().setHeight(iModel.getSelectedBox().getHeight() + dY);
+                    box.addWidth(dx);
+                    box.addHeight(dy);
+                    manageAcrossHandle(box);
                     break;
+
                 default:
                     break;
             }
-
             // Update based on current event position
             prevX = newX;
             prevY = newY;
@@ -288,4 +297,15 @@ public class MiniViewController {
             currentState = ready;
         }
     };
+
+    private static void manageAcrossHandle(Box box) {
+        if (box.getWidth() < 0) {
+            box.addX(box.getWidth());
+            box.setWidth(-box.getWidth());
+        }
+        if (box.getHeight() < 0) {
+            box.addY(box.getHeight());
+            box.setHeight(-box.getHeight());
+        }
+    }
 }
