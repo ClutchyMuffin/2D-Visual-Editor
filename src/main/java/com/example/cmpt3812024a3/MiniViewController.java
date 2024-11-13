@@ -1,3 +1,9 @@
+/**
+ * Name = Sayed Farzaan Rafi Bhat
+ * NSID = kfn036
+ * Stu# = 11356043
+ */
+
 package com.example.cmpt3812024a3;
 
 import javafx.scene.input.MouseEvent;
