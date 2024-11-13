@@ -141,8 +141,8 @@ public class DetailView extends StackPane implements Subscriber {
         // Draw the Portal Window
         gc.setLineWidth(2);
         gc.setFill(Color.LIGHTGRAY);
-        gc.fillRect(portal.getX(), portal.getY(), portal.getWidth(), portal.getHeight());
         gc.strokeRect(portal.getX(), portal.getY(), portal.getWidth(), portal.getHeight());
+        gc.fillRect(portal.getX(), portal.getY(), portal.getWidth(), portal.getHeight());
         if (iModel.getSelectedBox() == portal ) { drawHandles(gc, portal); }
 
         // Define Clipping region & clip it
@@ -152,6 +152,15 @@ public class DetailView extends StackPane implements Subscriber {
         // Transform the GC to the portal's properties & draw elements
         gc.translate(portal.getX() + portal.getPortalLeft(), portal.getY() + portal.getPortalTop());
         gc.scale(portal.getScaleFactor(), portal.getScaleFactor());
+
+        // Draw border around the world, and two diagonals
+        gc.strokeRect(0,0, iModel.getWorldSize(), iModel.getWorldSize());
+        gc.setFill(Color.MAROON);
+        gc.setLineDashes(10);
+        gc.strokeLine(0,0, iModel.getWorldSize(), iModel.getWorldSize());
+        gc.setLineDashes(0);
+
+        // Draw inner boxes
         model.getBoxes().forEach(innerElement -> {
             if (innerElement instanceof Portal innerPortal) {
                 drawPortal(gc, innerPortal, depth + 1);  // Recursive call with incremented depth

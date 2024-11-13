@@ -25,7 +25,7 @@ public class MiniView extends DetailView {
 
         StackPane.setAlignment(this, Pos.TOP_LEFT); // Position this at the top left
         this.getChildren().add(miniCanvas);
-        this.setOpacity(0.5);
+        this.setOpacity(0.65);
     }
 
 
@@ -56,8 +56,9 @@ public class MiniView extends DetailView {
         gc.clearRect(0, 0, miniCanvas.getWidth(), miniCanvas.getHeight());
 
         // Create border around the miniView
-        gc.setLineWidth(2);
-        gc.setFill(Color.LIGHTGRAY);
+        gc.setFill(Color.BLACK);
+        gc.setLineWidth(3);
+        gc.setFill(Color.GRAY);
         gc.fillRect(0, 0, miniCanvas.getWidth(), miniCanvas.getHeight());
         gc.strokeRect(0, 0, miniCanvas.getWidth(), miniCanvas.getHeight());
 
@@ -66,7 +67,7 @@ public class MiniView extends DetailView {
         gc.scale(scale, scale);
 
         // Draw the detailView rectangle
-        gc.setFill(Color.YELLOW);
+        gc.setFill(Color.YELLOWGREEN);
         gc.fillRect(iModel.getViewPortLeft(), iModel.getViewPortTop(),
                     iModel.getViewPortWidth(), iModel.getViewPortHeight());
 
