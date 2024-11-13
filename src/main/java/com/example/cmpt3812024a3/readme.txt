@@ -4,6 +4,7 @@
  * Stu# = 11356043
  */
 
+Repository Name: CMPT381-2024-A3/kfn036
 The assignment is complete and runs without error.
 
 Export the ZIP file to get the project folder.
