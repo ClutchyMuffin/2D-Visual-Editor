@@ -10,7 +10,7 @@ Export the ZIP file to get the project folder.
 Open the folder as a project in IntelliJ (File->Open->Select-the-folder).
 Choose 'Trust this project' if a window pops up.
 Wait for a few seconds till everything loads and the configuration is built.
-Can be started by running the EventDispatchSimulator class.
+Can be started by running the EditorApp class.
 
 I chose to create a separate controller for the MiniView, as handling all its interactions in the
 normal AppController was getting too complicated and difficult to handle.
